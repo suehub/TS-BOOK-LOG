@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import GlobalStyle from './styles/globalStyle';
 import Login from './pages/Login';
 import { AuthProvider } from './context/Authcontext';
+import Signup from './pages/Signup';
 const App: React.FC = () => {
   return (
     <>
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </AuthProvider>
     </>

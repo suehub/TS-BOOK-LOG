@@ -32,9 +32,6 @@ export function useAuth(): AuthContextType {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  if (context == null) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
 
   return context;
 }
