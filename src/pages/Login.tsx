@@ -8,10 +8,10 @@ import { useAuth } from '../context/Authcontext';
 
 interface Props {
   color?: string;
-  background?: string;
+  $background?: string;
 }
 
-const Logo = styled.div`
+export const Logo = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -32,7 +32,7 @@ const Logo = styled.div`
 `;
 
 const Div = styled.div`
-  width: 25rem;
+  width: 28rem;
   margin: 6rem auto;
   > form {
     width: 100%;
@@ -60,7 +60,7 @@ const Div = styled.div`
         }
       }
     }
-    > p {
+    > span {
       width: 100%;
       display: flex;
       justify-content: center;
@@ -77,7 +77,7 @@ const Div = styled.div`
   }
 `;
 
-const Button = styled.button<Props>`
+export const Button = styled.button<Props>`
   width: 100%;
   padding: 0.6rem 0;
   display: flex;
@@ -86,9 +86,9 @@ const Button = styled.button<Props>`
   font-size: 1.4rem;
   font-family: NotoSansKR-Bold;
   color: ${(props) => props.color ?? '#000'};
-  background-color: ${(props) => props.background ?? '#fff'};
+  background-color: ${(props) => props.$background ?? '#fff'};
   border: ${(props) =>
-    props.background === '#fff' ? '1px solid #d4d4d4' : 'none'};
+    props.$background === '#fff' ? '1px solid #d4d4d4' : 'none'};
   border-radius: 4px;
   > img {
     width: 1.6rem;
@@ -146,10 +146,8 @@ const Login: React.FC = () => {
   // 구글 로그인
   const handleGoogleLogin = async (): Promise<void> => {
     try {
-      if (email !== undefined && password !== undefined) {
-        await googleLogin();
-        navigate('/');
-      }
+      await googleLogin();
+      navigate('/');
     } catch (error) {
       alert('로그인에 실패하였습니다.');
       console.error('로그인 실패:', error);
@@ -195,21 +193,22 @@ const Login: React.FC = () => {
         <Button
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           color="#087EA4"
-          background="#E6F7FF"
+          $background="#E6F7FF"
           type="submit"
         >
           로그인
         </Button>
-        <p>
+        <span>
           <hr />
           &nbsp;&nbsp;&nbsp;또는 &nbsp;&nbsp;
           <hr />
-        </p>
+        </span>
         <Button
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={handleGoogleLogin}
+          onClick={() => {
+            void handleGoogleLogin();
+          }}
           color="#000"
-          background="#fff"
+          $background="#fff"
           type="button"
         >
           <img src={GoogleIcon} alt="google icon" />
