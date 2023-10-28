@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../assets/fonts/font.css';
-import LogoIcon from '../assets/icons/logo.png';
-import GoogleIcon from '../assets/icons/google_icon.png';
+import LogoIcon from '../assets/images/logo.png';
 import { useAuth } from '../context/Authcontext';
 
 interface Props {
@@ -90,7 +90,7 @@ export const Button = styled.button<Props>`
   border: ${(props) =>
     props.$background === '#fff' ? '1px solid #d4d4d4' : 'none'};
   border-radius: 4px;
-  > img {
+  .google {
     width: 1.6rem;
     height: 1.6rem;
     margin-right: 0.5rem;
@@ -211,7 +211,7 @@ const Login: React.FC = () => {
           $background="#fff"
           type="button"
         >
-          <img src={GoogleIcon} alt="google icon" />
+          <FcGoogle className="google" size={25} />
           Google 로그인
         </Button>
         <LinkWrapper>

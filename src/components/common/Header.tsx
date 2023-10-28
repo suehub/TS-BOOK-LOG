@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import LogoIcon from '../../assets/icons/logo.png';
-import SearchIcon from '../../assets/icons/search-icon.png';
-import LoginIcon from '../../assets/icons/login-icon.png';
-import LogoutIcon from '../../assets/icons/logout-icon.png';
-import PostIcon from '../../assets/icons/post-icon.png';
-import '../../assets/fonts/font.css';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../context/Authcontext';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { BiLogIn, BiLogOut } from 'react-icons/bi';
+import { HiOutlineDocumentText } from 'react-icons/hi';
 import { IoMdArrowDropdown } from 'react-icons/io';
+import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import '../../assets/fonts/font.css';
+import LogoIcon from '../../assets/images/logo.png';
+import { useAuth } from '../../context/Authcontext';
 
 const Div = styled.header`
   width: 100%;
@@ -46,7 +45,7 @@ const Search = styled.div`
   align-items: center;
   border: 2px solid #000;
   border-radius: 50px;
-  > img {
+  .search {
     width: 1.4rem;
     height: 1.4rem;
     margin-left: 0.8rem;
@@ -70,33 +69,32 @@ const Nav = styled.div`
 
 const NavItem = styled.div`
   display: flex;
-  align-items: center;
   font-size: 1.2rem;
-  margin-right: 2rem;
+  margin-right: 1.8rem;
   white-space: nowrap;
   cursor: pointer;
   color: #000;
   a {
+    display: flex;
+    align-items: center;
     color: #000;
-    padding-bottom: 0.3rem;
-  }
-  img {
-    width: 1.4rem;
-    height: 1.4rem;
-    margin-right: 0.5rem;
+    > span {
+      margin: 0 0.2rem;
+    }
   }
   .logout {
+    padding: 1rem 1.5rem;
     position: absolute;
     top: 3.4rem;
-    right: 0;
+    right: 5px;
     display: flex;
     justify-content: center;
-    width: 10rem;
+    align-items: center;
     background-color: #fff;
     box-shadow: 0px 3px 6px #00000029;
     z-index: 99;
     border-radius: 5px;
-    padding: 1rem 1rem;
+    font-size: 1.18rem;
   }
 `;
 
@@ -157,13 +155,13 @@ const Header: React.FC = () => {
         <p>BOOKLOG</p>
       </Logo>
       <Search>
-        <img src={SearchIcon} alt="search icon" />
+        <AiOutlineSearch className="search" size={25} />
         <input type="text" />
       </Search>
       <Nav>
         <NavItem>
           <Link to="">
-            <img src={PostIcon} alt="post icon" />
+            <HiOutlineDocumentText size={25} />
             <span>BookLog</span>
           </Link>
         </NavItem>
@@ -175,12 +173,16 @@ const Header: React.FC = () => {
                 setIsDrop(!isDrop);
               }}
             >
-              <span>{userName} 님</span>
-              <IoMdArrowDropdown size={25} />
+              <a>
+                <span>{userName} 님</span>
+                <IoMdArrowDropdown size={25} />
+              </a>
               {isDrop && (
                 <NavItem className="logout" onClick={handleLogout}>
-                  <img src={LogoutIcon} alt="logout icon" />
-                  logout
+                  <a>
+                    <BiLogOut size={25} />
+                    <span>Logout</span>
+                  </a>
                 </NavItem>
               )}
             </div>
@@ -193,7 +195,7 @@ const Header: React.FC = () => {
                 navigate('/login');
               }}
             >
-              <img src={LoginIcon} alt="login icon" />
+              <BiLogIn size={25} />
               <span>Login</span>
             </Link>
           </NavItem>

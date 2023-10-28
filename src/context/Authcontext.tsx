@@ -1,17 +1,17 @@
+import {
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  type User,
+} from 'firebase/auth';
 import React, {
   createContext,
   useContext,
-  useState,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
-import {
-  type User,
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  sendPasswordResetEmail,
-} from 'firebase/auth';
 import { auth } from '../firebase';
 
 type FirebaseUser = User;

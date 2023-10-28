@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+  type Auth,
+} from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import LogoIcon from '../assets/icons/logo.png';
+import LogoIcon from '../assets/images/logo.png';
 import { Button, Logo } from './Login';
-import {
-  type Auth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  getAuth,
-} from 'firebase/auth';
 
 interface FormData {
   email: string;
