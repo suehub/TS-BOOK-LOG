@@ -13,7 +13,6 @@ const Div = styled.div`
   position: relative;
   bottom: 0;
   border-top: 1px solid #a5a5a5;
-  background-color: #fff;
 `;
 
 const Logo = styled.div`

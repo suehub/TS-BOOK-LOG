@@ -46,8 +46,6 @@ const Search = styled.div`
   border: 2px solid #000;
   border-radius: 50px;
   .search {
-    width: 1.4rem;
-    height: 1.4rem;
     margin-left: 0.8rem;
   }
   > input {
@@ -155,7 +153,7 @@ const Header: React.FC = () => {
         <p>BOOKLOG</p>
       </Logo>
       <Search>
-        <AiOutlineSearch className="search" size={25} />
+        <AiOutlineSearch className="search" size={26} />
         <input type="text" />
       </Search>
       <Nav>
