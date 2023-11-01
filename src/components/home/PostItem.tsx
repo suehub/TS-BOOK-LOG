@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { type Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  type Timestamp,
+} from 'firebase/firestore';
 import defaultImage from '../../assets/images/default_image.png';
 import defaultProfile from '../../assets/images/default_profile.png';
+import { db } from '../../firebase';
 
 const Div = styled.div`
   width: 20vw;
@@ -133,6 +140,29 @@ interface PostItemProps {
 }
 
 const PostItem: React.FC<PostItemProps> = ({ post }) => {
+  const [commentCount, setCommentCount] = useState<number>(0);
+
+  useEffect(() => {
+    const getCommentCount = async (): Promise<void> => {
+      try {
+        const commentsQuery = query(
+          collection(db, 'comments'),
+          where('postId', '==', post.id)
+        );
+        const commentSnapshot = await getDocs(commentsQuery);
+        setCommentCount(commentSnapshot.size);
+      } catch (error) {
+        console.error('Error fetching comment count:', error);
+      }
+    };
+
+    void getCommentCount();
+
+    return () => {
+      setCommentCount(0);
+    };
+  }, [post.id]);
+
   const formatDate = (timestamp?: Timestamp): string => {
     if (timestamp == null) return '';
 
@@ -164,7 +194,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
           </p>
           <div className="desc">
             <span>{formatDate(post.createdAt)}</span>
-            <span>2개의 댓글</span>
+            <span>{commentCount}개의 댓글</span>
           </div>
         </div>
       </div>

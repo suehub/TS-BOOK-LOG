@@ -1,9 +1,10 @@
-import { collection, getDocs, type Timestamp } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../../firebase';
 import PostItem from './PostItem';
+import { type Post } from '../post/PostDetail';
 
 const Div = styled.div`
   width: 95%;
@@ -15,17 +16,6 @@ const PostWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 `;
-
-interface Post {
-  id: string;
-  title?: string;
-  image?: string;
-  content?: string;
-  createdAt?: Timestamp;
-  authorId?: string;
-  authorProfileImage?: string;
-  authorName?: string;
-}
 
 const PostList: React.FC = () => {
   const navigate = useNavigate();

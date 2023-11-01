@@ -91,7 +91,6 @@ const Div = styled.div`
   }
   .content {
     line-height: 1.3;
-    // font-size: 1rem;
   }
 `;
 
@@ -221,7 +220,7 @@ const PostDetail: React.FC = () => {
           ></div>
         </div>
 
-        <Comments />
+        {id != null && <Comments id={id} />}
       </Div>
       <Footer />
     </Wrapper>
