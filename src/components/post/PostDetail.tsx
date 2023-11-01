@@ -103,6 +103,7 @@ export interface Post {
   authorId?: string;
   authorProfileImage?: string;
   authorName?: string;
+  likesCount?: number;
 }
 
 const PostDetail: React.FC = () => {
@@ -169,7 +170,7 @@ const PostDetail: React.FC = () => {
   return (
     <Wrapper>
       <Header />
-      <SideBar />
+      <SideBar postId={id} userId={currentUser?.uid} />
 
       <Div>
         <div className="main">

@@ -16,7 +16,6 @@ const Div = styled.header`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  // border-bottom: 1px solid #a5a5a5;
   object-fit: cover;
   * {
     font-family: NotoSansKR-Medium;
@@ -124,7 +123,7 @@ const Header: React.FC = () => {
         dropdownRef.current != null &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setIsDrop(false); // 항상 false로 설정하여 드롭다운을 닫습니다.
+        setIsDrop(false);
       }
     };
     if (isDrop) {

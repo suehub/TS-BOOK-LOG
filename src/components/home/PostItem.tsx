@@ -133,6 +133,7 @@ interface Post {
   authorId?: string;
   authorProfileImage?: string;
   authorName?: string;
+  likesCount?: number;
 }
 
 interface PostItemProps {
@@ -216,7 +217,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 
           <div className="heart">
             <AiOutlineHeart className="heart-icon" size={12} />
-            <span>12</span>
+            <span>{post.likesCount}</span>
           </div>
         </div>
       </div>

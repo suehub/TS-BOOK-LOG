@@ -191,6 +191,7 @@ const PostWrite: React.FC = () => {
             authorId: user?.uid,
             authorProfileImage: user?.profileImage,
             authorName: user?.name,
+            likesCount: 0,
           });
         } else {
           await addDoc(postsCollection, {
