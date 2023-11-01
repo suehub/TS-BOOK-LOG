@@ -4,7 +4,7 @@ import {
   updateProfile,
   type Auth,
 } from 'firebase/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import LogoIcon from '../assets/images/logo.png';
@@ -118,10 +118,6 @@ const Signup: React.FC = () => {
 
   const [isValid, setIsValid] = useState<boolean>(false);
 
-  useEffect(() => {
-    validateForm();
-  }, [formData]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
@@ -129,8 +125,8 @@ const Signup: React.FC = () => {
     setIsValid(validateForm());
   };
 
-  const validateForm = (): boolean => {
-    let isValid = true; // Initialized to true, but will be set to false if any validations fail
+  const validateForm = useCallback((): boolean => {
+    let isValid = true;
 
     const newErrors = {
       email: '',
@@ -176,9 +172,13 @@ const Signup: React.FC = () => {
     }
 
     setErrors(newErrors);
-    setIsValid(isValid); // Setting the state with the computed value
+    setIsValid(isValid);
     return isValid;
-  };
+  }, [formData]);
+
+  useEffect(() => {
+    validateForm();
+  }, [validateForm]);
 
   // 회원가입
   const handleSignup = async (
