@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoImg from '../../assets/images/logo.png';
 import { AiOutlineHeart } from 'react-icons/ai';
+import { type Timestamp } from 'firebase/firestore';
+import defaultImage from '../../assets/images/default_image.png';
 
 const Div = styled.div`
   width: 20vw;
@@ -11,7 +12,7 @@ const Div = styled.div`
   justify-content: center;
   align-items: flex-start;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 8px;
   box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.04);
   transition:
     box-shadow 0.25s ease-in,
@@ -27,6 +28,9 @@ const Div = styled.div`
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
   }
+  .default-image {
+    object-fit: contain;
+  }
   > div {
     width: 90%;
     margin: 0 auto;
@@ -35,13 +39,14 @@ const Div = styled.div`
     width: inherit;
     font-size: 1.05rem;
     font-family: NotoSansKR-Medium;
-    margin: 0.8rem 0 0.6rem 0;
+    margin: 1rem 0;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
   .content {
     width: inherit;
+    height: 2.75rem;
     margin-bottom: 1rem;
     padding-bottom: 0.01rem;
     display: -webkit-box;
@@ -79,11 +84,11 @@ const Div = styled.div`
         display: flex;
         align-items: center;
         .profile-image {
-          width: 1.3rem;
-          height: 1.3rem;
+          width: 1.4rem;
+          height: 1.4rem;
           border-radius: 50%;
           object-fit: cover;
-          margin-right: 0.3rem;
+          margin-right: 0.5rem;
         }
         & > span {
           font-family: NotoSansKR-SemiBold;
@@ -110,26 +115,52 @@ const Div = styled.div`
   }
 `;
 
-const PostItem: React.FC = () => {
+interface Post {
+  id: string;
+  title?: string;
+  image?: string;
+  content?: string;
+  createdAt?: Timestamp;
+  authorProfileImage?: string;
+  authorName?: string;
+}
+
+interface PostItemProps {
+  post: Post;
+}
+
+const PostItem: React.FC<PostItemProps> = ({ post }) => {
+  const formatDate = (timestamp?: Timestamp): string => {
+    if (timestamp == null) return ''; // createdAt이 없을 경우 빈 문자열 반환
+
+    const dateObj = timestamp.toDate();
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const stripHtml = (html: string | undefined): string => {
+    if (html == null) return '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent ?? '';
+  };
+
   return (
     <Div>
-      <img
-        src="https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791167372864.jpg"
-        alt="book image"
-      />
+      {post.image != null ? (
+        <img src={post.image} alt="book image" />
+      ) : (
+        <img className="default-image" src={defaultImage} alt="book image" />
+      )}
       <div>
         <div>
-          <p className="title">
-            제목이 길어지면 어디까지 보이는지 테스트하기 위해 길게 작성하는
-            제목입니다요.
-          </p>
+          <p className="title">{post.title}</p>
           <p className="content">
-            내용이 길어지면 어디까지 보이는지 테스트하기 위해 길게 작성하는
-            글입니다요. 내용이 길어지면 어디까지 보이는지 테스트하기 위해 길게
-            작성하는 글입니다요.
+            {post.content != null ? stripHtml(post.content) : ''}
           </p>
           <div className="desc">
-            <span>2023-10-29</span>
+            <span>{formatDate(post.createdAt)}</span>
             <span>2개의 댓글</span>
           </div>
         </div>
@@ -137,9 +168,13 @@ const PostItem: React.FC = () => {
       <div className="profile">
         <div>
           <div>
-            <img className="profile-image" src={LogoImg} alt="profile image" />
+            <img
+              className="profile-image"
+              src={post.authorProfileImage}
+              alt="profile image"
+            />
             <span className="text">by</span>
-            <span> nickname</span>
+            <span> {post.authorName}</span>
           </div>
 
           <div className="heart">
