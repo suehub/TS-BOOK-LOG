@@ -22,6 +22,7 @@ interface Post {
   image?: string;
   content?: string;
   createdAt?: Timestamp;
+  authorId?: string;
   authorProfileImage?: string;
   authorName?: string;
 }
@@ -54,7 +55,6 @@ const PostList: React.FC = () => {
 
   return (
     <Div>
-      <div>menu</div>
       <PostWrapper>
         {posts.map((post, index) => {
           return (

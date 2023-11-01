@@ -1,12 +1,19 @@
-import { collection, doc, getDoc, type Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  type Timestamp,
+} from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import defaultProfile from '../../assets/images/default_profile.png';
 import SideBar from './SideBar';
+import { useAuth } from '../../context/Authcontext';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -23,25 +30,48 @@ const Div = styled.div`
     margin-bottom: 1.8rem;
     line-height: 1.2;
   }
-  .desc {
+  .info {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    font-family: NotoSansKR-Regular;
-    font-size: 1.05rem;
-    margin-bottom: 1rem;
-    padding-left: 0.2rem;
-    > img {
-      width: 1.42rem;
-      height: 1.42rem;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 0.3rem;
+    .desc {
+      display: flex;
+      align-items: center;
+      font-family: NotoSansKR-Regular;
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+      padding-left: 0.2rem;
+      > img {
+        width: 1.42rem;
+        height: 1.42rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 0.3rem;
+      }
+      span {
+        line-height: 0.9;
+      }
+      span:first-of-type {
+        font-family: NotoSansKR-Medium;
+        &::after {
+          content: '⋅';
+          padding: 0 0.3rem;
+        }
+      }
+      span:last-of-type {
+        font-family: NotoSansKR-Light;
+      }
     }
-    span:first-of-type {
-      font-family: NotoSansKR-Medium;
-      &::after {
-        content: '⋅';
-        padding: 0 0.4rem;
+    .button-wrapper {
+      > button {
+        background-color: #fff;
+        border: none;
+        font-size: 1.1rem;
+        padding-left: 1rem;
+        color: darkgray;
+        &:hover {
+          color: #000;
+        }
       }
     }
   }
@@ -68,13 +98,18 @@ interface Post {
   image?: string;
   content?: string;
   createdAt?: Timestamp;
+  authorId?: string;
   authorProfileImage?: string;
   authorName?: string;
 }
 
 const PostDetail: React.FC = () => {
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [post, setPost] = useState<Post | null>();
+
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchPost = async (): Promise<void> => {
@@ -113,6 +148,22 @@ const PostDetail: React.FC = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
+  // post 삭제
+  const deletePost = async (): Promise<void> => {
+    const userConfirmed = window.confirm('이 북로그를 삭제하시겠습니까?');
+
+    if (!userConfirmed) return;
+
+    try {
+      const postRef = doc(collection(db, 'posts'), id);
+      await deleteDoc(postRef);
+      alert('북로그가 삭제되었습니다.');
+      navigate('/');
+    } catch (error) {
+      alert('북로그 삭제에 실패하였습니다.');
+    }
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -121,17 +172,32 @@ const PostDetail: React.FC = () => {
       <Div>
         <div className="main">
           <p className="title">{post?.title}</p>
-          <div className="desc">
-            <img
-              src={
-                post?.authorProfileImage !== ''
-                  ? post?.authorProfileImage
-                  : defaultProfile
-              }
-              alt="profile image"
-            />
-            <span>{post?.authorName}</span>
-            <span>{formatDate(post?.createdAt)}</span>
+          <div className="info">
+            <div className="desc">
+              <img
+                src={
+                  post?.authorProfileImage !== ''
+                    ? post?.authorProfileImage
+                    : defaultProfile
+                }
+                alt="profile image"
+              />
+              <span>{post?.authorName}</span>
+              <span>{formatDate(post?.createdAt)}</span>
+            </div>
+            {currentUser?.uid === post?.authorId && (
+              <div className="button-wrapper">
+                <button type="button">Edit</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void deletePost();
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="content-image">

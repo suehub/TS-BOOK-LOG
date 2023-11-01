@@ -229,9 +229,7 @@ const PostWrite: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              handleWrite().catch((error) => {
-                console.error('Error:', error);
-              });
+              void handleWrite();
             }}
             className="post-button"
             type="button"

@@ -123,6 +123,7 @@ interface Post {
   image?: string;
   content?: string;
   createdAt?: Timestamp;
+  authorId?: string;
   authorProfileImage?: string;
   authorName?: string;
 }
