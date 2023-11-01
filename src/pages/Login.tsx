@@ -40,6 +40,7 @@ const Div = styled.div`
     border: 2px solid #d2d2d2;
     border-radius: 5px;
     padding: 2rem;
+    background-color: #fff;
     > div {
       width: 90%;
       margin: 0 auto;
@@ -90,10 +91,15 @@ export const Button = styled.button<Props>`
   border: ${(props) =>
     props.$background === '#fff' ? '1px solid #d4d4d4' : 'none'};
   border-radius: 4px;
+  transition: transform 0.8s;
   .google {
     width: 1.6rem;
     height: 1.6rem;
     margin-right: 0.5rem;
+  }
+  &:hover {
+    transform: scale(1.05);
+    transition: transform 0.8s;
   }
 `;
 

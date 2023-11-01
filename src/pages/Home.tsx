@@ -6,8 +6,6 @@ import PostList from '../components/home/PostList';
 // import Slick from '../components/home/Slick';
 
 const Div = styled.div`
-  height: 100%;
-  // background-color: ##ebebeb;
   > main {
     width: 95%;
     margin: 0 auto;

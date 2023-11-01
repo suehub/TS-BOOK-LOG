@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
-import { HiOutlineDocumentText } from 'react-icons/hi';
+import { HiOutlinePencilSquare } from 'react-icons/hi2';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -49,6 +49,7 @@ const Search = styled.div`
     margin-left: 0.8rem;
   }
   > input {
+    background-color: inherit;
     width: 90%;
     margin: 0 0.3rem;
     border: none;
@@ -157,42 +158,39 @@ const Header: React.FC = () => {
         <input type="text" />
       </Search>
       <Nav>
-        <NavItem>
-          <Link to="">
-            <HiOutlineDocumentText size={25} />
-            <span>BookLog</span>
-          </Link>
-        </NavItem>
         {currentUser != null ? (
-          <NavItem>
-            <div
-              ref={dropdownRef}
-              onClick={() => {
-                setIsDrop(!isDrop);
-              }}
-            >
-              <a>
-                <span>{userName} 님</span>
-                <IoMdArrowDropdown size={25} />
-              </a>
-              {isDrop && (
-                <NavItem className="logout" onClick={handleLogout}>
-                  <a>
-                    <BiLogOut size={25} />
-                    <span>Logout</span>
-                  </a>
-                </NavItem>
-              )}
-            </div>
-          </NavItem>
+          <>
+            <NavItem>
+              <Link to="/write">
+                <HiOutlinePencilSquare size={25} />
+                <span>BookLog</span>
+              </Link>
+            </NavItem>
+            <NavItem>
+              <div
+                ref={dropdownRef}
+                onClick={() => {
+                  setIsDrop(!isDrop);
+                }}
+              >
+                <a>
+                  <span>{userName} 님</span>
+                  <IoMdArrowDropdown size={25} />
+                </a>
+                {isDrop && (
+                  <NavItem className="logout" onClick={handleLogout}>
+                    <a>
+                      <BiLogOut size={25} />
+                      <span>Logout</span>
+                    </a>
+                  </NavItem>
+                )}
+              </div>
+            </NavItem>
+          </>
         ) : (
           <NavItem>
-            <Link
-              to="/login"
-              onClick={() => {
-                navigate('/login');
-              }}
-            >
+            <Link to="/login">
               <BiLogIn size={25} />
               <span>Login</span>
             </Link>

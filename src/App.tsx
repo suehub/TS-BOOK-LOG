@@ -5,6 +5,7 @@ import GlobalStyle from './styles/globalStyle';
 import Login from './pages/Login';
 import { AuthProvider } from './context/Authcontext';
 import Signup from './pages/Signup';
+import PostWrite from './components/post/PostWrite';
 const App: React.FC = () => {
   return (
     <>
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/write" element={<PostWrite />} />
         </Routes>
       </AuthProvider>
     </>

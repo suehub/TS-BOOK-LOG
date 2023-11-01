@@ -26,6 +26,7 @@ const Div = styled.div`
     border: 2px solid #d2d2d2;
     border-radius: 5px;
     padding: 2rem;
+    background-color: #fff;
     > div {
       width: 90%;
       margin: 0 auto;
@@ -125,10 +126,11 @@ const Signup: React.FC = () => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
     setIsChanged({ ...isChanged, [id]: true });
+    setIsValid(validateForm());
   };
 
   const validateForm = (): boolean => {
-    setIsValid(true);
+    let isValid = true; // Initialized to true, but will be set to false if any validations fail
 
     const newErrors = {
       email: '',
@@ -138,50 +140,43 @@ const Signup: React.FC = () => {
     };
 
     // 이메일 유효성 검사
-    if (isChanged.email) {
-      if (formData.email.trim() === '') {
-        newErrors.email = '이메일을 입력하세요.';
-        setIsValid(false);
-      } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-        newErrors.email = '올바른 이메일 형식이 아닙니다.';
-        setIsValid(false);
-      }
+    if (formData.email.trim() === '') {
+      newErrors.email = '이메일을 입력하세요.';
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = '올바른 이메일 형식이 아닙니다.';
+      isValid = false;
     }
 
     // 이름 유효성 검사
-    if (isChanged.name) {
-      if (formData.name.trim() === '') {
-        newErrors.name = '닉네임을 입력하세요.';
-        setIsValid(false);
-      } else if (formData.name.length < 2 || formData.name.length > 20) {
-        newErrors.name = '닉네임은 2자에서 20자 사이어야 합니다.';
-        setIsValid(false);
-      } else if (!/^[a-zA-Z0-9가-힣]+$/.test(formData.name)) {
-        newErrors.name = '특수 문자를 포함할 수 없는 닉네임입니다.';
-        setIsValid(false);
-      }
+    if (formData.name.trim() === '') {
+      newErrors.name = '닉네임을 입력하세요.';
+      isValid = false;
+    } else if (formData.name.length < 2 || formData.name.length > 20) {
+      newErrors.name = '닉네임은 2자에서 20자 사이어야 합니다.';
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9가-힣]+$/.test(formData.name)) {
+      newErrors.name = '특수 문자를 포함할 수 없는 닉네임입니다.';
+      isValid = false;
     }
 
     // 비밀번호 유효성 검사
-    if (isChanged.password) {
-      if (formData.password.trim() === '') {
-        newErrors.password = '비밀번호를 입력하세요.';
-        setIsValid(false);
-      } else if (formData.password.length < 6) {
-        newErrors.password = '비밀번호는 최소 6자 이상이어야 합니다.';
-        setIsValid(false);
-      }
+    if (formData.password.trim() === '') {
+      newErrors.password = '비밀번호를 입력하세요.';
+      isValid = false;
+    } else if (formData.password.length < 6) {
+      newErrors.password = '비밀번호는 최소 6자 이상이어야 합니다.';
+      isValid = false;
     }
 
     // 비밀번호 일치 검사
-    if (isChanged.confirmPassword) {
-      if (formData.confirmPassword !== formData.password) {
-        newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
-        setIsValid(false);
-      }
+    if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+      isValid = false;
     }
 
     setErrors(newErrors);
+    setIsValid(isValid); // Setting the state with the computed value
     return isValid;
   };
 
@@ -191,6 +186,7 @@ const Signup: React.FC = () => {
     authInstance: Auth
   ): Promise<void> => {
     e.preventDefault();
+    console.log(isValid);
     if (isValid) {
       try {
         const userCredential = await createUserWithEmailAndPassword(
@@ -220,6 +216,8 @@ const Signup: React.FC = () => {
           }
         }
       }
+    } else {
+      alert('모든 항목을 올바르게 입력해주세요');
     }
   };
 
