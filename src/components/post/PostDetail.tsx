@@ -8,12 +8,12 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import defaultProfile from '../../assets/images/default_profile.png';
+import { useAuth } from '../../context/Authcontext';
 import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
-import defaultProfile from '../../assets/images/default_profile.png';
 import SideBar from './SideBar';
-import { useAuth } from '../../context/Authcontext';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -92,7 +92,7 @@ const Div = styled.div`
   }
 `;
 
-interface Post {
+export interface Post {
   id: string;
   title?: string;
   image?: string;
@@ -187,7 +187,14 @@ const PostDetail: React.FC = () => {
             </div>
             {currentUser?.uid === post?.authorId && (
               <div className="button-wrapper">
-                <button type="button">Edit</button>
+                <button
+                  onClick={() => {
+                    navigate(`/edit/${id}`);
+                  }}
+                  type="button"
+                >
+                  Edit
+                </button>
                 <button
                   type="button"
                   onClick={() => {

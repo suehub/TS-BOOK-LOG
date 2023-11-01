@@ -1,12 +1,13 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import GlobalStyle from './styles/globalStyle';
-import Login from './pages/Login';
-import { AuthProvider } from './context/Authcontext';
-import Signup from './pages/Signup';
-import PostWrite from './components/post/PostWrite';
 import PostDetail from './components/post/PostDetail';
+import PostEdit from './components/post/PostEdit';
+import PostWrite from './components/post/PostWrite';
+import { AuthProvider } from './context/Authcontext';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import GlobalStyle from './styles/globalStyle';
 const App: React.FC = () => {
   return (
     <>
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/write" element={<PostWrite />} />
+          <Route path="/edit/:id" element={<PostEdit />} />
           <Route path="/post/:id" element={<PostDetail />} />
         </Routes>
       </AuthProvider>

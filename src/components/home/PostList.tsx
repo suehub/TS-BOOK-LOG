@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import PostItem from './PostItem';
 import { collection, getDocs, type Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { db } from '../../firebase';
+import PostItem from './PostItem';
 
 const Div = styled.div`
   width: 95%;

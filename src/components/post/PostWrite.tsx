@@ -11,7 +11,7 @@ import { db, storage } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 
-const Div = styled.div`
+export const Div = styled.div`
   margin: 0 auto;
   > form {
     width: 95%;
