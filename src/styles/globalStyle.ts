@@ -10,7 +10,6 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
     }
     body{
-        background-color: #f8f9fa;
         list-style: none;
         box-sizing: border-box;
     }
@@ -18,8 +17,7 @@ const GlobalStyle = createGlobalStyle`
         cursor: pointer;
     }
     footer {
-        background-color: #f8f9fa;
-
+        background-color: inherit;
     }
 
 `;

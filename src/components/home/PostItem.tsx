@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { type Timestamp } from 'firebase/firestore';
 import defaultImage from '../../assets/images/default_image.png';
+import defaultProfile from '../../assets/images/default_profile.png';
 
 const Div = styled.div`
   width: 20vw;
@@ -46,7 +47,7 @@ const Div = styled.div`
   }
   .content {
     width: inherit;
-    height: 2.75rem;
+    height: 3.18rem;
     margin-bottom: 1rem;
     padding-bottom: 0.01rem;
     display: -webkit-box;
@@ -56,6 +57,7 @@ const Div = styled.div`
     text-overflow: ellipsis;
     font-family: NotoSansKR-Light;
     font-size: 0.9rem;
+    line-height: 1.2;
   }
   .desc {
     font-family: NotoSansKR-Light;
@@ -131,7 +133,7 @@ interface PostItemProps {
 
 const PostItem: React.FC<PostItemProps> = ({ post }) => {
   const formatDate = (timestamp?: Timestamp): string => {
-    if (timestamp == null) return ''; // createdAt이 없을 경우 빈 문자열 반환
+    if (timestamp == null) return '';
 
     const dateObj = timestamp.toDate();
     const year = dateObj.getFullYear();
@@ -170,7 +172,11 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
           <div>
             <img
               className="profile-image"
-              src={post.authorProfileImage}
+              src={
+                post.authorProfileImage !== ''
+                  ? post.authorProfileImage
+                  : defaultProfile
+              }
               alt="profile image"
             />
             <span className="text">by</span>

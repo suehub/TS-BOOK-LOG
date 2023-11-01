@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import '../../assets/fonts/font.css';
 import PostItem from './PostItem';
 import { collection, getDocs, type Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const Div = styled.div`
-  width: 90%;
+  width: 95%;
   margin: 1rem auto;
 `;
 
@@ -27,6 +27,8 @@ interface Post {
 }
 
 const PostList: React.FC = () => {
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = async (): Promise<Post[]> => {
@@ -36,6 +38,10 @@ const PostList: React.FC = () => {
       id: doc.id,
       ...doc.data(),
     }));
+    postData.sort(
+      (a, b) => (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0)
+    );
+
     return postData;
   };
 
@@ -51,7 +57,16 @@ const PostList: React.FC = () => {
       <div>menu</div>
       <PostWrapper>
         {posts.map((post, index) => {
-          return <PostItem key={index} post={post} />;
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                navigate(`/post/${post.id}`);
+              }}
+            >
+              <PostItem post={post} />
+            </div>
+          );
         })}
       </PostWrapper>
     </Div>

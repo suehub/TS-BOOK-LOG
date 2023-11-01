@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import { AuthProvider } from './context/Authcontext';
 import Signup from './pages/Signup';
 import PostWrite from './components/post/PostWrite';
+import PostDetail from './components/post/PostDetail';
 const App: React.FC = () => {
   return (
     <>
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/write" element={<PostWrite />} />
+          <Route path="/post/:id" element={<PostDetail />} />
         </Routes>
       </AuthProvider>
     </>

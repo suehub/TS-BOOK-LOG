@@ -2,7 +2,6 @@ import React from 'react';
 import { AiFillGithub } from 'react-icons/ai';
 import { SiVelog } from 'react-icons/si';
 import styled from 'styled-components';
-import '../../assets/fonts/font.css';
 import LogoIcon from '../../assets/images/logo.png';
 
 const Div = styled.div`

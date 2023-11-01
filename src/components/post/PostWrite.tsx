@@ -12,10 +12,10 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 
 const Div = styled.div`
-  width: 90%;
-  margin: 1rem auto;
+  margin: 0 auto;
   > form {
-    margin: 1rem 0;
+    width: 95%;
+    margin: 1rem auto;
     display: flex;
     flex-direction: column;
     input[type='text'] {
@@ -29,6 +29,10 @@ const Div = styled.div`
       &:focus {
         outline: none;
       }
+    }
+    .file-name {
+      font-family: NotoSansKR-Medium;
+      padding-left: 0.1rem;
     }
     .title {
       margin-top: 0.2rem;
@@ -88,26 +92,33 @@ const Div = styled.div`
   }
 
   .button-wrapper {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     > button {
+      padding: 0.6rem 1.2rem;
       display: flex;
       justify-content: center;
       align-items: center;
       font-family: NotoSansKR-Medium;
       font-size: 1.2rem;
       background-color: inherit;
+      border-radius: 8px;
       border: none;
       > span {
-        margin-left: 0.2rem;
+        padding-left: 0.2rem;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
       }
     }
     .post-button {
-      padding: 0.6rem 1.2rem;
       background-color: #000;
       color: #fff;
-      border-radius: 8px;
+      &:hover {
+        background-color: #404040;
+      }
     }
   }
 `;
@@ -157,7 +168,7 @@ const PostWrite: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (): Promise<void> => {
+  const handleWrite = async (): Promise<void> => {
     let imageURL: string | undefined;
 
     try {
@@ -205,12 +216,30 @@ const PostWrite: React.FC = () => {
   return (
     <Div>
       <Header />
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void handleSubmit();
-        }}
-      >
+      <form>
+        <div className="button-wrapper">
+          <button
+            type="button"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <BiArrowBack size={25} />
+            <span>나가기</span>
+          </button>
+          <button
+            onClick={() => {
+              handleWrite().catch((error) => {
+                console.error('Error:', error);
+              });
+            }}
+            className="post-button"
+            type="button"
+          >
+            출간하기
+          </button>
+        </div>
+
         <div className="title">
           <input
             type="text"
@@ -233,26 +262,11 @@ const PostWrite: React.FC = () => {
         {imagePreview != null && (
           <div>
             <img src={imagePreview} alt="미리보기" />
-            <p>{fileName}</p>
+            <p className="file-name">{fileName}</p>
           </div>
         )}
 
         <ReactQuill theme="snow" value={content} onChange={setContent} />
-
-        <div className="button-wrapper">
-          <button
-            type="button"
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <BiArrowBack size={25} />
-            <span>나가기</span>
-          </button>
-          <button className="post-button" type="submit">
-            출간하기
-          </button>
-        </div>
       </form>
 
       <Footer />

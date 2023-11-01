@@ -10,12 +10,13 @@ import LogoIcon from '../../assets/images/logo.png';
 import { useAuth } from '../../context/Authcontext';
 
 const Div = styled.header`
-  width: 100%;
-  padding: 0.5rem;
+  width: 95%;
+  margin: 0 auto;
+  padding: 1rem 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  border-bottom: 1px solid #000;
+  // border-bottom: 1px solid #a5a5a5;
   object-fit: cover;
   * {
     font-family: NotoSansKR-Medium;
@@ -68,11 +69,24 @@ const Nav = styled.div`
 
 const NavItem = styled.div`
   display: flex;
+  align-items: center;
   font-size: 1.2rem;
-  margin-right: 1.8rem;
   white-space: nowrap;
   cursor: pointer;
   color: #000;
+  border-radius: 2rem;
+  &:not(:last-of-type) {
+    margin-right: 1.5rem;
+    > a {
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+
+      &:hover {
+        color: #fff;
+        background-color: #000;
+      }
+    }
+  }
   a {
     display: flex;
     align-items: center;
@@ -82,10 +96,10 @@ const NavItem = styled.div`
     }
   }
   .logout {
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1rem;
     position: absolute;
-    top: 3.4rem;
-    right: 5px;
+    top: 3.5rem;
+    right: 3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -93,7 +107,7 @@ const NavItem = styled.div`
     box-shadow: 0px 3px 6px #00000029;
     z-index: 99;
     border-radius: 5px;
-    font-size: 1.18rem;
+    font-size: 1rem;
   }
 `;
 
@@ -160,13 +174,13 @@ const Header: React.FC = () => {
       <Nav>
         {currentUser != null ? (
           <>
-            <NavItem>
+            <NavItem className="write">
               <Link to="/write">
                 <HiOutlinePencilSquare size={25} />
                 <span>BookLog</span>
               </Link>
             </NavItem>
-            <NavItem>
+            <NavItem className="profile">
               <div
                 ref={dropdownRef}
                 onClick={() => {
@@ -180,7 +194,7 @@ const Header: React.FC = () => {
                 {isDrop && (
                   <NavItem className="logout" onClick={handleLogout}>
                     <a>
-                      <BiLogOut size={25} />
+                      <BiLogOut size={20} />
                       <span>Logout</span>
                     </a>
                   </NavItem>

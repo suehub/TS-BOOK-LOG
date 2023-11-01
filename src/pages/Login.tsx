@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import '../assets/fonts/font.css';
 import LogoIcon from '../assets/images/logo.png';
 import { useAuth } from '../context/Authcontext';
 
