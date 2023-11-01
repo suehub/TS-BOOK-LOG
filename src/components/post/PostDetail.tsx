@@ -14,10 +14,12 @@ import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import SideBar from './SideBar';
+import Comments from './Comments';
 
 const Wrapper = styled.div`
   background-color: #fff;
 `;
+
 const Div = styled.div`
   width: 50%;
   margin: 4rem auto;
@@ -88,6 +90,7 @@ const Div = styled.div`
     }
   }
   .content {
+    line-height: 1.3;
     // font-size: 1rem;
   }
 `;
@@ -217,6 +220,8 @@ const PostDetail: React.FC = () => {
             dangerouslySetInnerHTML={{ __html: post?.content ?? '' }}
           ></div>
         </div>
+
+        <Comments />
       </Div>
       <Footer />
     </Wrapper>
