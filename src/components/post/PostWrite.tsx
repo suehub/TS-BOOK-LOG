@@ -105,9 +105,10 @@ export const Div = styled.div`
       font-size: 1.2rem;
       background-color: inherit;
       border-radius: 8px;
-      border: none;
+      border: 2px solid #404040;
+
       > span {
-        padding-left: 0.2rem;
+        margin-left: 0.3rem;
       }
       &:hover {
         background-color: rgba(0, 0, 0, 0.05);

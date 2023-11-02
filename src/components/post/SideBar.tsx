@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { CiHeart, CiBookmark } from 'react-icons/ci';
-import { BiSolidHeart } from 'react-icons/bi';
+import {
+  BiSolidHeart,
+  BiHeart,
+  BiBookmark,
+  BiSolidBookmark,
+} from 'react-icons/bi';
 import {
   addDoc,
   collection,
@@ -56,6 +60,8 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
 
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
   useEffect(() => {
     const checkLike = async (): Promise<void> => {
       const liked = await isLikedByUser();
@@ -72,6 +78,15 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
     if (postId != null) {
       void checkLike();
       void fetchLikeCount();
+    }
+
+    const checkBookmark = async (): Promise<void> => {
+      const bookmarked = await isBookmarkedByUser();
+      setIsBookmarked(bookmarked);
+    };
+
+    if (userId != null && postId != null) {
+      void checkBookmark();
     }
   }, [postId, userId]);
 
@@ -155,6 +170,41 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
     return !querySnapshot.empty;
   };
 
+  const isBookmarkedByUser = async (): Promise<boolean> => {
+    const bookmarksRef = collection(db, 'bookmarks');
+    const q = query(
+      bookmarksRef,
+      where('userId', '==', userId),
+      where('postId', '==', postId)
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
+  const addBookmark = async (): Promise<void> => {
+    const bookmarksRef = collection(db, 'bookmarks');
+    await addDoc(bookmarksRef, {
+      userId,
+      postId,
+      createdAt: new Date(),
+    });
+    setIsBookmarked(true);
+  };
+
+  const removeBookmark = async (): Promise<void> => {
+    const bookmarksRef = collection(db, 'bookmarks');
+    const q = query(
+      bookmarksRef,
+      where('userId', '==', userId),
+      where('postId', '==', postId)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      void deleteDoc(doc.ref);
+    });
+    setIsBookmarked(false);
+  };
+
   return (
     <Div>
       {isLiked ? (
@@ -173,14 +223,30 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
           }}
           className="heart"
         >
-          <CiHeart size={35} />
+          <BiHeart size={35} />
         </div>
       )}
 
       <span>{likeCount}</span>
-      <div className="bookmark">
-        <CiBookmark size={35} />
-      </div>
+      {isBookmarked ? (
+        <div
+          onClick={() => {
+            void removeBookmark();
+          }}
+          className="bookmark"
+        >
+          <BiSolidBookmark size={35} />
+        </div>
+      ) : (
+        <div
+          onClick={() => {
+            void addBookmark();
+          }}
+          className="bookmark"
+        >
+          <BiBookmark size={35} />
+        </div>
+      )}
     </Div>
   );
 };

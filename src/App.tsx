@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import GlobalStyle from './styles/globalStyle';
+import Bookmarks from './pages/Bookmarks';
 const App: React.FC = () => {
   return (
     <>
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/write" element={<PostWrite />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/edit/:id" element={<PostEdit />} />
           <Route path="/post/:id" element={<PostDetail />} />
         </Routes>

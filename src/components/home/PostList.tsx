@@ -6,12 +6,12 @@ import { db } from '../../firebase';
 import PostItem from './PostItem';
 import { type Post } from '../post/PostDetail';
 
-const Div = styled.div`
+export const Div = styled.div`
   width: 95%;
   margin: 1rem auto;
 `;
 
-const PostWrapper = styled.div`
+export const PostWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;

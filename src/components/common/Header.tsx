@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { BiLogIn, BiLogOut } from 'react-icons/bi';
+import { BiBookmark, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
@@ -77,8 +77,8 @@ const NavItem = styled.div`
   &:not(:last-of-type) {
     margin-right: 1.5rem;
     > a {
-      border-radius: 20px;
-      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      padding: 0.7rem 1rem;
 
       &:hover {
         color: #fff;
@@ -95,11 +95,11 @@ const NavItem = styled.div`
     }
   }
   .logout {
-    padding: 0.8rem 1rem;
     position: absolute;
-    top: 3.5rem;
+    top: 3.55rem;
     right: 3rem;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #fff;
@@ -107,6 +107,18 @@ const NavItem = styled.div`
     z-index: 99;
     border-radius: 5px;
     font-size: 1rem;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem 1rem;
+      &:first-of-type {
+        border-bottom: 2px solid #f1f3f5;
+      }
+      > span {
+        padding: 0 0.2rem;
+      }
+    }
   }
 `;
 
@@ -191,11 +203,19 @@ const Header: React.FC = () => {
                   <IoMdArrowDropdown size={25} />
                 </a>
                 {isDrop && (
-                  <NavItem className="logout" onClick={handleLogout}>
-                    <a>
+                  <NavItem className="logout">
+                    <div
+                      onClick={() => {
+                        navigate('/bookmarks');
+                      }}
+                    >
+                      <BiBookmark size={20} />
+                      <span>Bookmark</span>
+                    </div>
+                    <div onClick={handleLogout}>
                       <BiLogOut size={20} />
                       <span>Logout</span>
-                    </a>
+                    </div>
                   </NavItem>
                 )}
               </div>
