@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import {
-  BiSolidHeart,
-  BiHeart,
-  BiBookmark,
-  BiSolidBookmark,
-} from 'react-icons/bi';
-import {
+  type DocumentData,
+  type Query,
   addDoc,
   collection,
   deleteDoc,
-  doc,
   getDocs,
   query,
-  runTransaction,
   where,
+  type CollectionReference,
 } from 'firebase/firestore';
-import { db } from '../../firebase';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  BiBookmark,
+  BiHeart,
+  BiSolidBookmark,
+  BiSolidHeart,
+} from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { db } from '../../firebase';
 
 const Div = styled.div`
   width: 4.3rem;
@@ -56,197 +57,120 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
   const navigate = useNavigate();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const [isLiked, setIsLiked] = useState<boolean>(false);
-  const [likeCount, setLikeCount] = useState<number>(0);
-
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
-
-  useEffect(() => {
-    const checkLike = async (): Promise<void> => {
-      const liked = await isLikedByUser();
-      setIsLiked(liked);
-    };
-
-    const fetchLikeCount = async (): Promise<void> => {
-      const likesRef = collection(db, 'likes');
-      const q = query(likesRef, where('postId', '==', postId));
-      const querySnapshot = await getDocs(q);
-      setLikeCount(querySnapshot.size);
-    };
-
-    if (postId != null) {
-      void checkLike();
-      void fetchLikeCount();
-    }
-
-    const checkBookmark = async (): Promise<void> => {
-      const bookmarked = await isBookmarkedByUser();
-      setIsBookmarked(bookmarked);
-    };
-
-    if (userId != null && postId != null) {
-      void checkBookmark();
-    }
-  }, [postId, userId]);
-
-  // 좋아요 추가
-  const addLike = async (): Promise<void> => {
-    try {
-      const postRef = doc(collection(db, 'posts'), postId);
-      const newLike = {
-        userId,
-        postId,
-        createdAt: new Date(),
-      };
-
-      await runTransaction(db, async (transaction) => {
-        const postDoc = await transaction.get(postRef);
-
-        if (!postDoc.exists()) {
-          throw Error('Post does not exist!');
-        }
-
-        transaction.update(postRef, {
-          likesCount: postDoc.data().likesCount + 1,
-        });
-        const likesRef = collection(db, 'likes');
-        await addDoc(likesRef, newLike);
-      });
-
-      setIsLiked(true);
-      setLikeCount((prevCount) => prevCount + 1);
-      navigate(`/post/${postId}`);
-    } catch (error) {
-      console.error('Failed to add like:', error);
-    }
-  };
-
-  // 좋아요 취소
-  const removeLike = async (): Promise<void> => {
-    try {
-      const postRef = doc(collection(db, 'posts'), postId);
-
-      await runTransaction(db, async (transaction) => {
-        const postDoc = await transaction.get(postRef);
-
-        if (!postDoc.exists()) {
-          throw Error('Post does not exist!');
-        }
-
-        transaction.update(postRef, {
-          likesCount: postDoc.data().likesCount - 1,
-        });
-
-        const likesRef = collection(db, 'likes');
+  // 데이터 패칭을 위한 함수 정의
+  const fetchData = useCallback(
+    async (
+      id: string | undefined,
+      ref: Query<DocumentData>,
+      setState: React.Dispatch<React.SetStateAction<boolean>>
+    ) => {
+      if (id != null && userId != null) {
         const q = query(
-          likesRef,
+          ref,
           where('userId', '==', userId),
-          where('postId', '==', postId)
+          where('postId', '==', id)
         );
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          void deleteDoc(doc.ref);
-        });
-      });
+        setState(!querySnapshot.empty);
+      }
+    },
+    [userId]
+  );
 
-      setIsLiked(false);
-      setLikeCount((prevCount) => prevCount - 1);
-      navigate(`/post/${postId}`);
-    } catch (error) {
-      console.error('Failed to remove like:', error);
+  // 데이터 패칭을 위한 useEffect
+  useEffect(() => {
+    const likesRef = collection(db, 'likes');
+    const bookmarksRef = collection(db, 'bookmarks');
+
+    void fetchData(postId, likesRef, setIsLiked);
+    void fetchData(postId, bookmarksRef, setIsBookmarked);
+
+    // 좋아요 수 패칭
+    if (postId != null) {
+      const q = query(likesRef, where('postId', '==', postId));
+      void getDocs(q).then((querySnapshot) => {
+        setLikeCount(querySnapshot.size);
+      });
+    }
+  }, [postId, userId, fetchData]);
+
+  // 이벤트 핸들러 함수 정의
+  const handleInteraction = async (
+    action: boolean,
+    ref: CollectionReference<DocumentData>,
+    interactionState: boolean,
+    updateState: React.Dispatch<React.SetStateAction<boolean>>
+  ): Promise<void> => {
+    const q = query(
+      ref,
+      where('userId', '==', userId),
+      where('postId', '==', postId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (interactionState) {
+      // 제거 로직
+      for (const doc of querySnapshot.docs) {
+        await deleteDoc(doc.ref);
+      }
+      updateState(false);
+    } else {
+      // 추가 로직
+      await addDoc(ref, { userId, postId, createdAt: new Date() });
+      updateState(true);
     }
   };
 
-  // 사용자가 게시물에 좋아요를 눌렀는지 확인
-  const isLikedByUser = async (): Promise<boolean> => {
-    const likesRef = collection(db, 'likes');
-    const q = query(
-      likesRef,
-      where('userId', '==', userId),
-      where('postId', '==', postId)
+  // 좋아요와 북마크 토글
+  const handleLike = async (): Promise<void> => {
+    void handleInteraction(
+      isLiked,
+      collection(db, 'likes'),
+      isLiked,
+      setIsLiked
     );
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    navigate(`/post/${postId}`);
   };
 
-  const isBookmarkedByUser = async (): Promise<boolean> => {
-    const bookmarksRef = collection(db, 'bookmarks');
-    const q = query(
-      bookmarksRef,
-      where('userId', '==', userId),
-      where('postId', '==', postId)
+  const handleBookmark = async (): Promise<void> => {
+    void handleInteraction(
+      isBookmarked,
+      collection(db, 'bookmarks'),
+      isBookmarked,
+      setIsBookmarked
     );
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
-  };
-
-  const addBookmark = async (): Promise<void> => {
-    const bookmarksRef = collection(db, 'bookmarks');
-    await addDoc(bookmarksRef, {
-      userId,
-      postId,
-      createdAt: new Date(),
-    });
-    setIsBookmarked(true);
-  };
-
-  const removeBookmark = async (): Promise<void> => {
-    const bookmarksRef = collection(db, 'bookmarks');
-    const q = query(
-      bookmarksRef,
-      where('userId', '==', userId),
-      where('postId', '==', postId)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      void deleteDoc(doc.ref);
-    });
-    setIsBookmarked(false);
   };
 
   return (
     <Div>
-      {isLiked ? (
-        <div
-          onClick={() => {
-            void removeLike();
-          }}
-          className="heart"
-        >
-          <BiSolidHeart size={35} />
-        </div>
-      ) : (
-        <div
-          onClick={() => {
-            void addLike();
-          }}
-          className="heart"
-        >
-          <BiHeart size={35} />
-        </div>
-      )}
+      <div
+        onClick={() => {
+          void handleLike();
+        }}
+        className="heart"
+      >
+        {isLiked ? <BiSolidHeart size={35} /> : <BiHeart size={35} />}
+      </div>
 
       <span>{likeCount}</span>
-      {isBookmarked ? (
-        <div
-          onClick={() => {
-            void removeBookmark();
-          }}
-          className="bookmark"
-        >
+
+      <div
+        onClick={() => {
+          void handleBookmark();
+        }}
+        className="bookmark"
+      >
+        {isBookmarked ? (
           <BiSolidBookmark size={35} />
-        </div>
-      ) : (
-        <div
-          onClick={() => {
-            void addBookmark();
-          }}
-          className="bookmark"
-        >
+        ) : (
           <BiBookmark size={35} />
-        </div>
-      )}
+        )}
+      </div>
     </Div>
   );
 };

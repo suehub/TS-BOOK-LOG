@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { AiOutlineHeart } from 'react-icons/ai';
 import {
   collection,
-  getDocs,
   query,
   where,
   type Timestamp,
+  onSnapshot,
 } from 'firebase/firestore';
 import defaultImage from '../../assets/images/default_image.png';
 import defaultProfile from '../../assets/images/default_profile.png';
@@ -142,25 +142,30 @@ interface PostItemProps {
 
 const PostItem: React.FC<PostItemProps> = ({ post }) => {
   const [commentCount, setCommentCount] = useState<number>(0);
+  const [likesCount, setLikesCount] = useState<number>(post.likesCount ?? 0);
 
   useEffect(() => {
-    const getCommentCount = async (): Promise<void> => {
-      try {
-        const commentsQuery = query(
-          collection(db, 'comments'),
-          where('postId', '==', post.id)
-        );
-        const commentSnapshot = await getDocs(commentsQuery);
-        setCommentCount(commentSnapshot.size);
-      } catch (error) {
-        console.error('Error fetching comment count:', error);
-      }
-    };
+    // Listen for comments count
+    const commentsQuery = query(
+      collection(db, 'comments'),
+      where('postId', '==', post.id)
+    );
+    const unsubscribeComments = onSnapshot(commentsQuery, (snapshot) => {
+      setCommentCount(snapshot.size);
+    });
 
-    void getCommentCount();
+    // Listen for likes count
+    const likesQuery = query(
+      collection(db, 'likes'),
+      where('postId', '==', post.id)
+    );
+    const unsubscribeLikes = onSnapshot(likesQuery, (snapshot) => {
+      setLikesCount(snapshot.size);
+    });
 
     return () => {
-      setCommentCount(0);
+      unsubscribeComments();
+      unsubscribeLikes();
     };
   }, [post.id]);
 
@@ -217,7 +222,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 
           <div className="heart">
             <AiOutlineHeart className="heart-icon" size={12} />
-            <span>{post.likesCount}</span>
+            <span>{likesCount}</span>
           </div>
         </div>
       </div>
