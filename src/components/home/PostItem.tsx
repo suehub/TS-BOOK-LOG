@@ -11,6 +11,7 @@ import {
 import defaultImage from '../../assets/images/default_image.png';
 import defaultProfile from '../../assets/images/default_profile.png';
 import { db } from '../../firebase';
+import { type Post } from './PostList';
 
 const Div = styled.div`
   width: 20vw;
@@ -124,18 +125,6 @@ const Div = styled.div`
   }
 `;
 
-interface Post {
-  id: string;
-  title?: string;
-  image?: string;
-  content?: string;
-  createdAt?: Timestamp;
-  authorId?: string;
-  authorProfileImage?: string;
-  authorName?: string;
-  likesCount?: number;
-}
-
 interface PostItemProps {
   post: Post;
 }
@@ -187,8 +176,8 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
 
   return (
     <Div>
-      {post.image != null ? (
-        <img src={post.image} alt="book image" />
+      {post.bookImage != null ? (
+        <img src={post.bookImage} alt="book image" />
       ) : (
         <img className="default-image" src={defaultImage} alt="book image" />
       )}

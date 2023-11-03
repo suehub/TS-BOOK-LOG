@@ -108,10 +108,14 @@ const NavItem = styled.div`
     border-radius: 5px;
     font-size: 1rem;
     > div {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0.8rem 1rem;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
       &:first-of-type {
         border-bottom: 2px solid #f1f3f5;
       }

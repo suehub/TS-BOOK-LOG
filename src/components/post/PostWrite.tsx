@@ -1,15 +1,15 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
-import { BiArrowBack, BiImageAdd } from 'react-icons/bi';
+import { BiArrowBack } from 'react-icons/bi';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../context/Authcontext';
-import { db, storage } from '../../firebase';
+import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import BookSearchModal from './BookSearchModal';
 
 export const Div = styled.div`
   margin: 0 auto;
@@ -38,12 +38,6 @@ export const Div = styled.div`
       margin-top: 0.2rem;
       display: flex;
       align-items: flex-end;
-      input[type='file'] {
-        display: none;
-      }
-      label {
-        width: 9rem;
-      }
       .image-add--icon {
         width: inherit;
         margin-left: 1rem;
@@ -67,10 +61,10 @@ export const Div = styled.div`
       }
     }
     img {
-      width: 15rem;
-      height: 10rem;
+      width: 10vw;
+      height: auto;
       margin-top: 0.5rem;
-      object-fit: cover;
+      object-fit: contain;
       border: 1px solid #000;
       border-radius: 10px;
     }
@@ -124,21 +118,54 @@ export const Div = styled.div`
   }
 `;
 
+export interface Book {
+  title: string;
+  link: string;
+  image: string;
+  author: string;
+  pubdate: string;
+}
+
+interface Post {
+  title: string;
+  content: string;
+  createdAt: Timestamp;
+  authorId: string | undefined;
+  authorProfileImage?: string;
+  authorName?: string;
+  likesCount: number;
+  bookTitle: string;
+  bookLink: string;
+  bookImage: string;
+  bookAuthor: string;
+  bookPubDate: string;
+}
+
 const PostWrite: React.FC = () => {
   const navigate = useNavigate();
-
   const { currentUser } = useAuth();
   const [user, setUser] = useState<{
     uid: string;
     profileImage: string;
     name: string;
   } | null>(null);
-
   const [title, setTitle] = useState<string>('');
-  const [file, setFile] = useState<File | null>();
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+  // 책 선택 핸들러
+  const handleSelectBook = async (book: Book): Promise<void> => {
+    // 책 정보를 상태에 저장
+    setSelectedBook({
+      title: book.title,
+      link: book.link,
+      image: book.image,
+      author: book.author,
+      pubdate: book.pubdate,
+    });
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     if (currentUser != null) {
@@ -155,59 +182,33 @@ const PostWrite: React.FC = () => {
     };
   }, [currentUser]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile != null) {
-      setFileName(selectedFile.name);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-      setFile(selectedFile);
-    }
-  };
-
   const handleWrite = async (): Promise<void> => {
-    let imageURL: string | undefined;
-
     try {
-      // 이미지 저장
-      if (file != null && fileName != null) {
-        const storageRef = ref(storage, `images/${fileName}`);
-        const uploadSnapshot = await uploadBytesResumable(storageRef, file);
-        imageURL = await getDownloadURL(uploadSnapshot.ref);
-      }
       const postsCollection = collection(db, 'posts');
 
-      if (title !== '' && content !== '') {
-        // 포스트 저장
-        if (imageURL != null) {
-          await addDoc(postsCollection, {
-            title,
-            image: imageURL,
-            content,
-            createdAt: Timestamp.now(),
-            authorId: user?.uid,
-            authorProfileImage: user?.profileImage,
-            authorName: user?.name,
-            likesCount: 0,
-          });
-        } else {
-          await addDoc(postsCollection, {
-            title,
-            content,
-            createdAt: Timestamp.now(),
-            authorId: user?.uid,
-            authorProfileImage: user?.profileImage,
-            authorName: user?.name,
-          });
-        }
+      // 제목과 내용이 있을 때만 포스트 저장
+      if (title !== '' && content !== '' && selectedBook != null) {
+        const postData: Post = {
+          title,
+          content,
+          createdAt: Timestamp.now(),
+          authorId: user?.uid,
+          authorProfileImage: user?.profileImage,
+          authorName: user?.name,
+          likesCount: 0,
+          bookTitle: selectedBook?.title,
+          bookLink: selectedBook?.link,
+          bookImage: selectedBook?.image,
+          bookAuthor: selectedBook?.author,
+          bookPubDate: selectedBook?.pubdate,
+        };
+        // 포스트 데이터베이스에 추가
+        await addDoc(postsCollection, postData);
+
         alert('북로그가 업로드되었습니다.');
         navigate('/');
       } else {
-        alert('제목과 글을 입력해주세요');
+        alert('책을 선택하고 제목과 글을 입력해주세요');
       }
     } catch (error) {
       console.error('Error saving post: ', error);
@@ -250,24 +251,36 @@ const PostWrite: React.FC = () => {
             placeholder="제목을 입력하세요"
           />
 
-          <label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-            <div className="image-add--icon">
-              <BiImageAdd size={25} />
-              <span>대표 이미지 선택</span>
-            </div>
-          </label>
+          <div className="button-wrapper">
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              책 검색
+            </button>
+          </div>
         </div>
 
-        {imagePreview != null && (
-          <div>
-            <img src={imagePreview} alt="미리보기" />
-            <p className="file-name">{fileName}</p>
-          </div>
-        )}
+        <div>
+          <img src={selectedBook?.image} alt="책 표지" />
+          <p>{selectedBook?.title}</p>
+          <p>{selectedBook?.author}</p>
+          <p>{selectedBook?.pubdate}</p>
+        </div>
 
         <ReactQuill theme="snow" value={content} onChange={setContent} />
       </form>
+
+      {isModalOpen && (
+        <BookSearchModal
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+          onSelectBook={handleSelectBook}
+        />
+      )}
 
       <Footer />
     </Div>

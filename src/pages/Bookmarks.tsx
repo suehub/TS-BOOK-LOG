@@ -9,8 +9,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostItem from '../components/home/PostItem';
-import { Div, PostWrapper } from '../components/home/PostList';
-import { type Post } from '../components/post/PostDetail';
+import { Div, type Post, PostWrapper } from '../components/home/PostList';
 import { useAuth } from '../context/Authcontext';
 import { db } from '../firebase';
 import styled from 'styled-components';
@@ -43,7 +42,7 @@ const Bookmarks: React.FC = () => {
             const postId = docSnapshot.data().postId;
             const postRef = doc(db, 'posts', postId);
             const postSnap = await getDoc(postRef);
-            return { id: postSnap.id, ...postSnap.data() } satisfies Post;
+            return { id: postSnap.id, ...(postSnap.data() as Post) };
           }
         );
 

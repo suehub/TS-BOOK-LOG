@@ -15,6 +15,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import SideBar from './SideBar';
 import Comments from './Comments';
+import { type Post } from '../home/PostList';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -93,18 +94,6 @@ const Div = styled.div`
     line-height: 1.3;
   }
 `;
-
-export interface Post {
-  id: string;
-  title?: string;
-  image?: string;
-  content?: string;
-  createdAt?: Timestamp;
-  authorId?: string;
-  authorProfileImage?: string;
-  authorName?: string;
-  likesCount?: number;
-}
 
 const PostDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -211,8 +200,8 @@ const PostDetail: React.FC = () => {
           </div>
 
           <div className="content-image">
-            {post?.image != null && (
-              <img src={post?.image} alt="content image" />
+            {post?.bookImage != null && (
+              <img src={post?.bookImage} alt="content image" />
             )}
           </div>
           <div
