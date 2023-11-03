@@ -29,7 +29,7 @@ const Div = styled.div`
   }
   .title {
     font-family: NotoSansKR-Bold;
-    font-size: 3rem;
+    font-size: 2.8rem;
     margin-bottom: 1.8rem;
     line-height: 1.2;
   }
@@ -49,7 +49,7 @@ const Div = styled.div`
         height: 1.42rem;
         border-radius: 50%;
         object-fit: cover;
-        margin-right: 0.3rem;
+        margin-right: 0.4rem;
       }
       span {
         line-height: 0.9;
@@ -62,7 +62,7 @@ const Div = styled.div`
         }
       }
       span:last-of-type {
-        font-family: NotoSansKR-Light;
+        font-family: NotoSansKR-Regular;
       }
     }
     .button-wrapper {
@@ -79,19 +79,86 @@ const Div = styled.div`
     }
   }
 
-  .content-image {
-    max-width: 100%;
+  .book {
     margin: 3rem auto;
-    width: 60%;
+    width: 100%;
     height: auto;
-    > img {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #f1f2f3;
+    color: #000;
+
+    div {
+      width: 20%;
+      img {
+        width: 80%;
+        height: auto;
+        padding: 0.2rem;
+        object-fit: contain;
+        border-radius: 2px;
+        border-right: 1px solid #f1f2f3;
+      }
+    }
+
+    .book-desc {
       width: 100%;
-      height: auto;
-      object-fit: contain;
+      font-family: NotoSansKR-Medium;
+      p {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+
+      span:last-of-type {
+        font-family: NotoSansKR-Regular;
+        font-size: 0.9rem;
+        &::before {
+          content: '|';
+          padding: 0 0.8rem;
+        }
+      }
     }
   }
+
   .content {
+    font-family: NotoSans-Regular;
     line-height: 1.3;
+    font-size: 1.1rem;
+    h1 {
+      font-size: 2.5rem;
+    }
+    h2 {
+      font-size: 2rem;
+    }
+    h3 {
+      font-size: 1.5rem;
+    }
+    strong {
+      font-weight: 700;
+    }
+    em {
+      font-style: italic;
+    }
+    u {
+      text-decoration: underline;
+    }
+    ul {
+      display: block;
+      list-style-type: disc;
+      margin: 1em 0;
+      padding-left: 40px;
+    }
+
+    ol {
+      display: block;
+      list-style-type: decimal;
+      margin: 1em 0;
+      padding-left: 40px;
+    }
+    li {
+      display: list-item;
+    }
   }
 `;
 
@@ -156,6 +223,18 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  const formatBookDate = (
+    dateString: string | undefined
+  ): string | undefined => {
+    if (dateString == null) {
+      return undefined;
+    }
+    return dateString.replace(
+      /^(\d{4})(\d{2})(\d{2})$/,
+      (match, year, month, day) => `${year}-${month}-${day}`
+    );
+  };
+
   return (
     <Wrapper>
       <Header />
@@ -199,11 +278,24 @@ const PostDetail: React.FC = () => {
             )}
           </div>
 
-          <div className="content-image">
-            {post?.bookImage != null && (
-              <img src={post?.bookImage} alt="content image" />
-            )}
-          </div>
+          <a
+            className="book"
+            href={post?.bookLink}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div>
+              {post?.bookImage != null && (
+                <img src={post?.bookImage} alt="content image" />
+              )}
+            </div>
+            <div className="book-desc">
+              <p>{post?.bookTitle}</p>
+              <span>{post?.bookAuthor}</span>
+              <span>{formatBookDate(post?.bookPubDate)}</span>
+            </div>
+          </a>
+
           <div
             className="content"
             dangerouslySetInnerHTML={{ __html: post?.content ?? '' }}

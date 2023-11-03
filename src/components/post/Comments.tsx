@@ -65,7 +65,9 @@ const Div = styled.div`
 `;
 
 const Comment = styled.div`
+  margin-bottom: 1rem;
   padding: 1.5rem 0;
+  border-bottom: 1px solid #f1f3f5;
   .profile {
     margin-bottom: 1.5rem;
     display: flex;
@@ -75,8 +77,8 @@ const Comment = styled.div`
       display: flex;
       align-items: center;
       img {
-        width: 3.375rem;
-        height: 3.375rem;
+        width: 3rem;
+        height: 3rem;
         display: block;
         border-radius: 50%;
         object-fit: cover;
@@ -106,11 +108,17 @@ const Comment = styled.div`
         border: none;
         background: none;
         color: #868e96;
+        &:first-of-type {
+          margin-right: 0.8rem;
+        }
+        &:hover {
+          color: #262626;
+        }
       }
     }
   }
   .comment {
-    padding: 0.2rem 0;
+    padding: 0.2rem 0 0.2rem 0.5rem;
     font-family: NotoSansKR-Regular;
     font-size: 1.1rem;
     line-height: 1.7;
@@ -278,6 +286,7 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
             </div>
             {currentUser != null && comment.authorId === currentUser.uid && (
               <div className="button-wrapper">
+                <button type="button">수정</button>
                 <button
                   onClick={() => {
                     void handleDeleteComment(comment.id);

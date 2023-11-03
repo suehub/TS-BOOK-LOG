@@ -70,13 +70,13 @@ export const Div = styled.div`
 
       img {
         width: 8vw;
-        margin: 0.5rem;
+        padding: 0.2rem;
         object-fit: contain;
-        border-radius: 4px;
-        border: 1px solid #f1f2f3;
+        border-radius: 2px;
+        border-right: 1px solid #f1f2f3;
       }
       > div {
-        margin: 1.5rem 1rem 1.5rem 0.5rem;
+        margin: 1.5rem 1rem 1.5rem 1rem;
         font-family: NotoSansKR-Medium;
         p:first-of-type {
           font-size: 1.3rem;
@@ -105,6 +105,9 @@ export const Div = styled.div`
     border-bottom-right-radius: 8px;
     font-family: NotoSansKR-Regular;
     font-size: 1rem;
+    strong {
+      font-weight: 700;
+    }
   }
 
   .button-wrapper {
