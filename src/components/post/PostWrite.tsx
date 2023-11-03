@@ -15,7 +15,7 @@ import { StyledBook } from './PostEdit';
 export const Div = styled.div`
   margin: 0 auto;
   > form {
-    width: 95%;
+    width: 85%;
     min-height: 82vh;
     margin: 1rem auto;
     display: flex;

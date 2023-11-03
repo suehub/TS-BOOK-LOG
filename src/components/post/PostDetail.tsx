@@ -3,7 +3,10 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  query,
+  where,
   type Timestamp,
+  getDocs,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -208,19 +211,57 @@ const PostDetail: React.FC = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
+  const deletePostAndRelatedData = async (postId: string): Promise<void> => {
+    const postRef = doc(collection(db, 'posts'), postId);
+
+    // 관련 댓글 삭제
+    const commentsQuery = query(
+      collection(db, 'comments'),
+      where('postId', '==', postId)
+    );
+    const commentsSnapshot = await getDocs(commentsQuery);
+    commentsSnapshot.forEach((doc) => {
+      void deleteDoc(doc.ref);
+    });
+
+    // 관련 좋아요 삭제
+    const likesQuery = query(
+      collection(db, 'likes'),
+      where('postId', '==', postId)
+    );
+    const likesSnapshot = await getDocs(likesQuery);
+    likesSnapshot.forEach((doc) => {
+      void deleteDoc(doc.ref);
+    });
+
+    // 관련 북마크 삭제
+    const bookmarksQuery = query(
+      collection(db, 'bookmarks'),
+      where('postId', '==', postId)
+    );
+    const bookmarksSnapshot = await getDocs(bookmarksQuery);
+    bookmarksSnapshot.forEach((doc) => {
+      void deleteDoc(doc.ref);
+    });
+
+    // 포스트 삭제
+    await deleteDoc(postRef);
+  };
+
   // post 삭제
   const deletePost = async (): Promise<void> => {
     const userConfirmed = window.confirm('이 북로그를 삭제하시겠습니까?');
 
     if (!userConfirmed) return;
+    if (id == null) return;
 
     try {
-      const postRef = doc(collection(db, 'posts'), id);
-      await deleteDoc(postRef);
+      await deletePostAndRelatedData(id);
       alert('북로그가 삭제되었습니다.');
       navigate('/');
     } catch (error) {
       alert('북로그 삭제에 실패하였습니다.');
+      console.error('Error deleting post and related data:', error);
     }
   };
 

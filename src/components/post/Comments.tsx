@@ -261,7 +261,6 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
     try {
       await updateDoc(commentRef, {
         text: newText,
-        updatedAt: new Date(), // 수정된 시간도 업데이트
       });
       alert('댓글이 수정되었습니다.');
       setEditCommentId(null); // 수정 상태 초기화
