@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { BiBookmark, BiLogIn, BiLogOut } from 'react-icons/bi';
+import { BiBookReader, BiBookmark, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { HiOutlinePencilSquare } from 'react-icons/hi2';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../../assets/fonts/font.css';
-import LogoIcon from '../../assets/images/logo.png';
+// import LogoIcon from '../../assets/images/logo.png';
 import { useAuth } from '../../context/Authcontext';
 
 const Div = styled.header`
@@ -31,10 +31,11 @@ const Logo = styled.div`
   > img {
     width: 2.4rem;
     height: 2.6rem;
-    margin-right: 0.3rem;
+    // margin-right: 0.3rem;
   }
   > p {
-    padding-top: 0.35rem;
+    // padding-top: 0.35rem;
+    margin-left: 0.3rem;
     font-size: 1.6rem;
   }
 `;
@@ -88,7 +89,7 @@ const NavItem = styled.div`
   color: #000;
   border-radius: 2rem;
   &:not(:last-of-type) {
-    margin-right: 1.5rem;
+    margin-right: 1.2rem;
     > a {
       border-radius: 2rem;
       padding: 0.7rem 1rem;
@@ -200,7 +201,8 @@ const Header: React.FC = () => {
           navigate('/');
         }}
       >
-        <img src={LogoIcon} alt="logo" />
+        <BiBookReader size={35} />
+        {/* <img src={LogoIcon} alt="logo" /> */}
         <p>BOOKLOG</p>
       </Logo>
       <Search

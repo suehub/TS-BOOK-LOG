@@ -8,6 +8,7 @@ import {
   where,
   type DocumentData,
   type Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -126,19 +127,19 @@ const Comment = styled.div`
     word-break: keep-all;
     overflow-wrap: break-word;
   }
-  .plus-comment {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    font-family: NotoSansKR-Medium;
-    font-size: 0.9rem;
-    line-height: 1.1;
-    color: #262626;
-    cursor: pointer;
-    > span {
-      margin-left: 0.2rem;
-    }
+  textarea {
+    width: 100%;
+    resize: none;
+    padding: 1rem;
+    outline: none;
+    border: 1px solid #f1f3f5;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    min-height: 6.125rem;
+    font-size: 1.1rem;
+    color: #212529;
+    line-height: 1.75;
+    background: #fff;
   }
 `;
 
@@ -150,6 +151,9 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
   const { currentUser } = useAuth();
   const [comments, setComments] = useState<DocumentData[]>([]);
   const [commentText, setCommentText] = useState<string>('');
+
+  const [editCommentId, setEditCommentId] = useState<string | null>(null);
+  const [editCommentText, setEditCommentText] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -248,6 +252,52 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
     }
   };
 
+  // 댓글 수정
+  const updateComment = async (
+    commentId: string,
+    newText: string
+  ): Promise<void> => {
+    const commentRef = doc(db, 'comments', commentId);
+    try {
+      await updateDoc(commentRef, {
+        text: newText,
+        updatedAt: new Date(), // 수정된 시간도 업데이트
+      });
+      alert('댓글이 수정되었습니다.');
+      setEditCommentId(null); // 수정 상태 초기화
+      const updatedComments = await fetchComments(id);
+      setComments(updatedComments);
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      alert('댓글 수정에 실패하였습니다.');
+    }
+  };
+
+  // 댓글 수정을 시작하는 함수
+  const startEditing = (comment: DocumentData): void => {
+    setEditCommentId(comment.id);
+    setEditCommentText(comment.text);
+  };
+
+  // 댓글 수정을 취소하는 함수
+  const cancelEditing = async (): Promise<void> => {
+    setEditCommentId(null);
+    setEditCommentText('');
+  };
+
+  // 수정 완료 버튼을 눌렀을 때 호출되는 함수
+  const handleUpdateComment = async (): Promise<void> => {
+    if (editCommentId != null) {
+      await updateComment(editCommentId, editCommentText);
+      setEditCommentId(null); // 수정 상태 초기화
+      setEditCommentText(''); // 텍스트 초기화
+      const updatedComments = await fetchComments(id);
+      setComments(updatedComments);
+    }
+  };
+
+  // ...
+
   return (
     <Div>
       <p>{comments.length}개의 댓글</p>
@@ -286,19 +336,58 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
             </div>
             {currentUser != null && comment.authorId === currentUser.uid && (
               <div className="button-wrapper">
-                <button type="button">수정</button>
-                <button
-                  onClick={() => {
-                    void handleDeleteComment(comment.id);
-                  }}
-                  type="button"
-                >
-                  삭제
-                </button>
+                {editCommentId === comment.id ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        void handleUpdateComment();
+                      }}
+                      type="button"
+                    >
+                      수정 완료
+                    </button>
+                    <button
+                      onClick={() => {
+                        void cancelEditing();
+                      }}
+                      type="button"
+                    >
+                      취소
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        startEditing(comment);
+                      }}
+                      type="button"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => {
+                        void handleDeleteComment(comment.id);
+                      }}
+                      type="button"
+                    >
+                      삭제
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
-          <div className="comment">{comment.text}</div>
+          {editCommentId === comment.id ? (
+            <textarea
+              value={editCommentText}
+              onChange={(e) => {
+                setEditCommentText(e.target.value);
+              }}
+            />
+          ) : (
+            <div className="comment">{comment.text}</div>
+          )}{' '}
         </Comment>
       ))}
     </Div>
