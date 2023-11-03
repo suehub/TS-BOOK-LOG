@@ -191,7 +191,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
         </button>
         <div className="search">
           <div className="input-wrapper">
-            <AiOutlineSearch className="search-icon" size={26} />
+            <AiOutlineSearch className="search-icon" size={27} />
             <div className="input-item">
               <input
                 type="text"

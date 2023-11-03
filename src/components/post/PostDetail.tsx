@@ -185,7 +185,7 @@ const PostDetail: React.FC = () => {
                   }}
                   type="button"
                 >
-                  Edit
+                  수정
                 </button>
                 <button
                   type="button"
@@ -193,7 +193,7 @@ const PostDetail: React.FC = () => {
                     void deletePost();
                   }}
                 >
-                  Delete
+                  삭제
                 </button>
               </div>
             )}

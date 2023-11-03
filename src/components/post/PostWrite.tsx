@@ -15,11 +15,12 @@ export const Div = styled.div`
   margin: 0 auto;
   > form {
     width: 95%;
+    min-height: 80vh;
     margin: 1rem auto;
     display: flex;
     flex-direction: column;
     input[type='text'] {
-      width: 40%;
+      width: 50%;
       padding: 0.1rem 0.2rem;
       background-color: inherit;
       border: none;
@@ -60,13 +61,34 @@ export const Div = styled.div`
         }
       }
     }
-    img {
-      width: 10vw;
-      height: auto;
-      margin-top: 0.5rem;
-      object-fit: contain;
-      border: 1px solid #000;
-      border-radius: 10px;
+    .book-desc {
+      margin: 1rem 0;
+      margin-right: auto;
+      display: flex;
+      border: 1px solid #a5a5a5;
+      border-radius: 4px;
+
+      img {
+        width: 8vw;
+        margin: 0.5rem;
+        object-fit: contain;
+        border-radius: 4px;
+        border: 1px solid #f1f2f3;
+      }
+      > div {
+        margin: 1.5rem 1rem 1.5rem 0.5rem;
+        font-family: NotoSansKR-Medium;
+        p:first-of-type {
+          font-size: 1.3rem;
+        }
+        p:nth-of-type(2) {
+          margin: 1rem 0;
+        }
+        p:last-of-type {
+          font-family: NotoSansKR-Regular;
+          font-size: 0.9rem;
+        }
+      }
     }
   }
   .quill {
@@ -90,7 +112,13 @@ export const Div = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    > button {
+    > div {
+      display: flex;
+      button:first-of-type {
+        margin-right: 0.5rem;
+      }
+    }
+    button {
       padding: 0.6rem 1.2rem;
       display: flex;
       justify-content: center;
@@ -216,6 +244,13 @@ const PostWrite: React.FC = () => {
     }
   };
 
+  const formatDate = (dateString: string): string => {
+    return dateString.replace(
+      /^(\d{4})(\d{2})(\d{2})$/,
+      (match, year, month, day) => `${year}-${month}-${day}`
+    );
+  };
+
   return (
     <Div>
       <Header />
@@ -230,16 +265,37 @@ const PostWrite: React.FC = () => {
             <BiArrowBack size={25} />
             <span>나가기</span>
           </button>
-          <button
-            onClick={() => {
-              void handleWrite();
-            }}
-            className="post-button"
-            type="button"
-          >
-            출간하기
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              책 검색
+            </button>
+            <button
+              onClick={() => {
+                void handleWrite();
+              }}
+              className="post-button"
+              type="button"
+            >
+              출간하기
+            </button>
+          </div>
         </div>
+
+        {selectedBook != null && (
+          <div className="book-desc">
+            <img src={selectedBook?.image} alt="책 표지" />
+            <div>
+              <p>{selectedBook?.title}</p>
+              <p>{selectedBook?.author}</p>
+              <p>{formatDate(selectedBook?.pubdate)}</p>
+            </div>
+          </div>
+        )}
 
         <div className="title">
           <input
@@ -250,24 +306,6 @@ const PostWrite: React.FC = () => {
             }}
             placeholder="제목을 입력하세요"
           />
-
-          <div className="button-wrapper">
-            <button
-              type="button"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              책 검색
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <img src={selectedBook?.image} alt="책 표지" />
-          <p>{selectedBook?.title}</p>
-          <p>{selectedBook?.author}</p>
-          <p>{selectedBook?.pubdate}</p>
         </div>
 
         <ReactQuill theme="snow" value={content} onChange={setContent} />
