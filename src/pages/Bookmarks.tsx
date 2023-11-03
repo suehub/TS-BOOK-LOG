@@ -19,7 +19,7 @@ import { db } from '../firebase';
 const Wrapper = styled.div`
   > main {
     width: 95%;
-    min-height: 80vh;
+    min-height: 82vh;
     margin: 0 auto;
   }
 `;

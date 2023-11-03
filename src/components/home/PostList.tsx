@@ -1,6 +1,6 @@
 import { collection, getDocs, type Timestamp } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../../firebase';
 import PostItem from './PostItem';
@@ -8,6 +8,11 @@ import PostItem from './PostItem';
 export const Div = styled.div`
   width: 95%;
   margin: 1rem auto;
+  .post-length {
+    margin: 2rem 1rem;
+    font-family: NotoSansKR-Medium;
+    font-size: 1.3rem;
+  }
 `;
 
 export const PostWrapper = styled.div`
@@ -35,6 +40,9 @@ export interface Post {
 const PostList: React.FC = () => {
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') ?? '';
+
   const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = async (): Promise<Post[]> => {
@@ -51,15 +59,34 @@ const PostList: React.FC = () => {
     return postData;
   };
 
+  // useEffect(() => {
+  //   void (async () => {
+  //     const fetchedPosts = await fetchPosts();
+  //     setPosts(fetchedPosts);
+  //   })();
+  // }, []);
+
   useEffect(() => {
     void (async () => {
       const fetchedPosts = await fetchPosts();
-      setPosts(fetchedPosts);
+      const postsToShow = fetchedPosts.filter((post) => {
+        const title = post.title ?? '';
+        const bookTitle = post.bookTitle ?? '';
+        return title.includes(searchQuery) || bookTitle.includes(searchQuery);
+      });
+
+      setPosts(searchQuery !== '' ? postsToShow : fetchedPosts);
     })();
-  }, []);
+  }, [searchQuery]);
 
   return (
     <Div>
+      {posts.length > 0 ? (
+        <p className="post-length">{`총 ${posts.length}개의 북로그`}</p>
+      ) : (
+        <p className="post-length">검색된 북로그가 없습니다.</p>
+      )}
+
       <PostWrapper>
         {posts.map((post, index) => {
           return (

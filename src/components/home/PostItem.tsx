@@ -134,7 +134,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
   const [likesCount, setLikesCount] = useState<number>(post.likesCount ?? 0);
 
   useEffect(() => {
-    // Listen for comments count
+    // 댓글 수 세기
     const commentsQuery = query(
       collection(db, 'comments'),
       where('postId', '==', post.id)
@@ -143,7 +143,7 @@ const PostItem: React.FC<PostItemProps> = ({ post }) => {
       setCommentCount(snapshot.size);
     });
 
-    // Listen for likes count
+    // 좋아요 수 세기
     const likesQuery = query(
       collection(db, 'likes'),
       where('postId', '==', post.id)

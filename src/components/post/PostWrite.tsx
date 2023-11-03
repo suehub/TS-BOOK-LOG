@@ -16,7 +16,7 @@ export const Div = styled.div`
   margin: 0 auto;
   > form {
     width: 95%;
-    min-height: 80vh;
+    min-height: 82vh;
     margin: 1rem auto;
     display: flex;
     flex-direction: column;

@@ -29,24 +29,23 @@ const Logo = styled.div`
   margin-left: 0.2rem;
   padding: 0.2rem;
   > img {
-    width: 2.5rem;
+    width: 2.4rem;
     height: 2.6rem;
     margin-right: 0.3rem;
   }
   > p {
-    padding-top: 0.2rem;
+    padding-top: 0.35rem;
     font-size: 1.6rem;
   }
 `;
 
-const Search = styled.div`
-  height: 95%;
+const Search = styled.form`
   display: flex;
   align-items: center;
   border: 2px solid #000;
-  border-radius: 50px;
+  border-radius: 20rem;
   .search {
-    margin-left: 0.8rem;
+    margin-left: 1rem;
   }
   > input {
     background-color: inherit;
@@ -56,6 +55,20 @@ const Search = styled.div`
     font-size: 1rem;
     &:focus {
       outline: none;
+    }
+  }
+  .search-button {
+    padding: 1rem;
+    white-space: nowrap;
+    font-size: 1.1rem;
+    border-top-right-radius: 20rem;
+    border-bottom-right-radius: 20rem;
+    border: none;
+    border-left: 2px solid #000;
+    background-color: inherit;
+    background-color: #f1f2f3;
+    &:hover {
+      background-color: rgb(0, 0, 0, 0.08);
     }
   }
 `;
@@ -96,7 +109,7 @@ const NavItem = styled.div`
   }
   .logout {
     position: absolute;
-    top: 3.55rem;
+    top: 4rem;
     right: 3rem;
     display: flex;
     flex-direction: column;
@@ -128,11 +141,21 @@ const NavItem = styled.div`
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+
   const { currentUser, logout } = useAuth(); // 현재 사용자 정보 가져오기
   const userName = currentUser?.displayName;
+
   const [isDrop, setIsDrop] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    navigate(`/?search=${encodeURIComponent(searchTerm)}`);
+  };
   useEffect(() => {
     const clickEvent = (e: MouseEvent): void => {
       if (
@@ -165,9 +188,7 @@ const Header: React.FC = () => {
     }
   };
 
-  const handleLogout = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ): void => {
+  const handleLogout = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.stopPropagation();
     void handleAsyncLogout();
   };
@@ -182,9 +203,22 @@ const Header: React.FC = () => {
         <img src={LogoIcon} alt="logo" />
         <p>BOOKLOG</p>
       </Logo>
-      <Search>
+      <Search
+        onSubmit={(e) => {
+          void handleSearch(e);
+        }}
+      >
         <AiOutlineSearch className="search" size={26} />
-        <input type="text" />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+          }}
+        />
+        <button className="search-button" type="submit">
+          검색
+        </button>
       </Search>
       <Nav>
         {currentUser != null ? (
@@ -192,7 +226,7 @@ const Header: React.FC = () => {
             <NavItem className="write">
               <Link to="/write">
                 <HiOutlinePencilSquare size={25} />
-                <span>BookLog</span>
+                <span>새 글 작성</span>
               </Link>
             </NavItem>
             <NavItem className="profile">
@@ -214,11 +248,11 @@ const Header: React.FC = () => {
                       }}
                     >
                       <BiBookmark size={20} />
-                      <span>Bookmark</span>
+                      <span>북마크</span>
                     </div>
                     <div onClick={handleLogout}>
                       <BiLogOut size={20} />
-                      <span>Logout</span>
+                      <span>로그아웃</span>
                     </div>
                   </NavItem>
                 )}
@@ -229,7 +263,7 @@ const Header: React.FC = () => {
           <NavItem>
             <Link to="/login">
               <BiLogIn size={25} />
-              <span>Login</span>
+              <span>로그인</span>
             </Link>
           </NavItem>
         )}

@@ -5,17 +5,18 @@ import Header from '../components/common/Header';
 import PostList from '../components/home/PostList';
 // import Slick from '../components/home/Slick';
 
-const Div = styled.div`
+const HomeDiv = styled.div`
   background-color: #f8f9fa;
   > main {
     width: 95%;
+    min-height: 80vh;
     margin: 0 auto;
   }
 `;
 
 const Home: React.FC = () => {
   return (
-    <Div>
+    <HomeDiv>
       <Header />
       <main>
         {/* <Slick /> */}
@@ -23,7 +24,7 @@ const Home: React.FC = () => {
       </main>
 
       <Footer />
-    </Div>
+    </HomeDiv>
   );
 };
 
