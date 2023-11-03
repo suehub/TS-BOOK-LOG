@@ -195,12 +195,7 @@ const Login: React.FC = () => {
             required
           />
         </div>
-        <Button
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          color="#087EA4"
-          $background="#E6F7FF"
-          type="submit"
-        >
+        <Button color="#087EA4" $background="#E6F7FF" type="submit">
           로그인
         </Button>
         <span>

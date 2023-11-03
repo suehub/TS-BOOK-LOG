@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { AiOutlineHeart } from 'react-icons/ai';
 import {
   collection,
+  onSnapshot,
   query,
   where,
   type Timestamp,
-  onSnapshot,
 } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { AiOutlineHeart } from 'react-icons/ai';
+import styled from 'styled-components';
 import defaultImage from '../../assets/images/default_image.png';
 import defaultProfile from '../../assets/images/default_profile.png';
 import { db } from '../../firebase';

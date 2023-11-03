@@ -1,6 +1,4 @@
 import {
-  type DocumentData,
-  type Query,
   addDoc,
   collection,
   deleteDoc,
@@ -8,6 +6,8 @@ import {
   query,
   where,
   type CollectionReference,
+  type DocumentData,
+  type Query,
 } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import {

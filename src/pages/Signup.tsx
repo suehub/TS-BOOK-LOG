@@ -186,7 +186,6 @@ const Signup: React.FC = () => {
     authInstance: Auth
   ): Promise<void> => {
     e.preventDefault();
-    console.log(isValid);
     if (isValid) {
       try {
         const userCredential = await createUserWithEmailAndPassword(

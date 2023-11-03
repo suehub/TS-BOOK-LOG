@@ -10,6 +10,7 @@ import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 import BookSearchModal from './BookSearchModal';
+import { StyledBook } from './PostEdit';
 
 export const Div = styled.div`
   margin: 0 auto;
@@ -61,35 +62,6 @@ export const Div = styled.div`
         }
       }
     }
-    .book-desc {
-      margin: 1rem 0;
-      margin-right: auto;
-      display: flex;
-      border: 1px solid #a5a5a5;
-      border-radius: 4px;
-
-      img {
-        width: 8vw;
-        padding: 0.2rem;
-        object-fit: contain;
-        border-radius: 2px;
-        border-right: 1px solid #f1f2f3;
-      }
-      > div {
-        margin: 1.5rem 1rem 1.5rem 1rem;
-        font-family: NotoSansKR-Medium;
-        p:first-of-type {
-          font-size: 1.3rem;
-        }
-        p:nth-of-type(2) {
-          margin: 1rem 0;
-        }
-        p:last-of-type {
-          font-family: NotoSansKR-Regular;
-          font-size: 0.9rem;
-        }
-      }
-    }
   }
   .quill {
     margin: 1rem 0 4rem 0;
@@ -109,42 +81,42 @@ export const Div = styled.div`
       font-weight: 700;
     }
   }
+`;
 
-  .button-wrapper {
-    width: 100%;
+export const PostButton = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  > div {
     display: flex;
-    justify-content: space-between;
+    button:first-of-type {
+      margin-right: 0.5rem;
+    }
+  }
+  button {
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    > div {
-      display: flex;
-      button:first-of-type {
-        margin-right: 0.5rem;
-      }
-    }
-    button {
-      padding: 0.6rem 1.2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: NotoSansKR-Medium;
-      font-size: 1.2rem;
-      background-color: inherit;
-      border-radius: 8px;
-      border: 2px solid #404040;
+    font-family: NotoSansKR-Medium;
+    font-size: 1.2rem;
+    background-color: inherit;
+    border-radius: 8px;
+    border: 2px solid #404040;
 
-      > span {
-        margin-left: 0.3rem;
-      }
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
+    > span {
+      margin-left: 0.3rem;
     }
-    .post-button {
-      background-color: #000;
-      color: #fff;
-      &:hover {
-        background-color: #404040;
-      }
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+  .post-button {
+    background-color: #000;
+    color: #fff;
+    &:hover {
+      background-color: #404040;
     }
   }
 `;
@@ -258,7 +230,7 @@ const PostWrite: React.FC = () => {
     <Div>
       <Header />
       <form>
-        <div className="button-wrapper">
+        <PostButton>
           <button
             type="button"
             onClick={() => {
@@ -287,17 +259,21 @@ const PostWrite: React.FC = () => {
               출간하기
             </button>
           </div>
-        </div>
+        </PostButton>
 
         {selectedBook != null && (
-          <div className="book-desc">
-            <img src={selectedBook?.image} alt="책 표지" />
+          <StyledBook className="book">
             <div>
-              <p>{selectedBook?.title}</p>
-              <p>{selectedBook?.author}</p>
-              <p>{formatDate(selectedBook?.pubdate)}</p>
+              {selectedBook?.image != null && (
+                <img src={selectedBook?.image} alt="content image" />
+              )}
             </div>
-          </div>
+            <div className="book-desc">
+              <p>{selectedBook?.title}</p>
+              <span>{selectedBook?.author}</span>
+              <span>{formatDate(selectedBook?.pubdate)}</span>
+            </div>
+          </StyledBook>
         )}
 
         <div className="title">

@@ -13,9 +13,9 @@ import { useAuth } from '../../context/Authcontext';
 import { db } from '../../firebase';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
-import SideBar from './SideBar';
-import Comments from './Comments';
 import { type Post } from '../home/PostList';
+import Comments from './Comments';
+import SideBar from './SideBar';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -79,48 +79,6 @@ const Div = styled.div`
     }
   }
 
-  .book {
-    margin: 3rem auto;
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 4px;
-    border: 1px solid #f1f2f3;
-    color: #000;
-
-    div {
-      width: 20%;
-      img {
-        width: 80%;
-        height: auto;
-        padding: 0.2rem;
-        object-fit: contain;
-        border-radius: 2px;
-        border-right: 1px solid #f1f2f3;
-      }
-    }
-
-    .book-desc {
-      width: 100%;
-      font-family: NotoSansKR-Medium;
-      p {
-        font-size: 1.2rem;
-        margin-bottom: 1.2rem;
-      }
-
-      span:last-of-type {
-        font-family: NotoSansKR-Regular;
-        font-size: 0.9rem;
-        &::before {
-          content: '|';
-          padding: 0 0.8rem;
-        }
-      }
-    }
-  }
-
   .content {
     font-family: NotoSans-Regular;
     line-height: 1.3;
@@ -158,6 +116,49 @@ const Div = styled.div`
     }
     li {
       display: list-item;
+    }
+  }
+`;
+
+export const BookDesc = styled.a`
+  margin: 3rem auto;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #f1f2f3;
+  color: #000;
+
+  div {
+    width: 20%;
+    height: auto;
+    img {
+      width: 80%;
+      height: auto;
+      padding: 0.2rem;
+      object-fit: contain;
+      border-radius: 2px;
+      border-right: 1px solid #f1f2f3;
+    }
+  }
+
+  .book-desc {
+    width: 100%;
+    font-family: NotoSansKR-Medium;
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    span:last-of-type {
+      font-family: NotoSansKR-Regular;
+      font-size: 0.9rem;
+      &::before {
+        content: '|';
+        padding: 0 0.8rem;
+      }
     }
   }
 `;
@@ -278,7 +279,7 @@ const PostDetail: React.FC = () => {
             )}
           </div>
 
-          <a
+          <BookDesc
             className="book"
             href={post?.bookLink}
             target="_blank"
@@ -294,7 +295,7 @@ const PostDetail: React.FC = () => {
               <span>{post?.bookAuthor}</span>
               <span>{formatBookDate(post?.bookPubDate)}</span>
             </div>
-          </a>
+          </BookDesc>
 
           <div
             className="content"

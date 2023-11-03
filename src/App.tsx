@@ -4,11 +4,12 @@ import PostDetail from './components/post/PostDetail';
 import PostEdit from './components/post/PostEdit';
 import PostWrite from './components/post/PostWrite';
 import { AuthProvider } from './context/Authcontext';
+import Bookmarks from './pages/Bookmarks';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import GlobalStyle from './styles/globalStyle';
-import Bookmarks from './pages/Bookmarks';
+
 const App: React.FC = () => {
   return (
     <>

@@ -8,13 +8,13 @@ import {
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import Footer from '../components/common/Footer';
+import Header from '../components/common/Header';
 import PostItem from '../components/home/PostItem';
-import { Div, type Post, PostWrapper } from '../components/home/PostList';
+import { Div, PostWrapper, type Post } from '../components/home/PostList';
 import { useAuth } from '../context/Authcontext';
 import { db } from '../firebase';
-import styled from 'styled-components';
-import Header from '../components/common/Header';
-import Footer from '../components/common/Footer';
 
 const Wrapper = styled.div`
   > main {
