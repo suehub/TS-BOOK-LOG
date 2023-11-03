@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { FiPlusSquare } from 'react-icons/fi';
+import defaultProfile from '../../assets/images/default_profile.png';
 
 const Div = styled.div`
   width: 100%;
@@ -267,7 +267,10 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
         <Comment key={idx}>
           <div className="profile">
             <div>
-              <img src={comment.authorImage} alt="profile image" />
+              <img
+                src={comment.authorImage ?? defaultProfile}
+                alt="profile image"
+              />
               <div className="info">
                 <p>{comment.authorName}</p>
                 <p>{formatDate(comment.createdAt)}</p>
@@ -287,13 +290,6 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
             )}
           </div>
           <div className="comment">{comment.text}</div>
-          {currentUser != null && comment.authorId === currentUser.uid && (
-            <div className="plus-comment">
-              {' '}
-              <FiPlusSquare size={20} />
-              <span> 답글 달기</span>
-            </div>
-          )}
         </Comment>
       ))}
     </Div>
