@@ -16,6 +16,7 @@ export const Div = styled.div`
 `;
 
 export const PostWrapper = styled.div`
+  margin-bottom: 3rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;

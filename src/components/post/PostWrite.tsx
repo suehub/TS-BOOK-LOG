@@ -65,7 +65,7 @@ export const Div = styled.div`
   }
   .quill {
     margin: 1rem 0 4rem 0;
-    height: 30rem;
+    height: 25rem;
   }
   .ql-toolbar {
     border-top-left-radius: 8px;
