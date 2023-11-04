@@ -5,7 +5,7 @@ import Header from '../components/common/Header';
 import PostList from '../components/home/PostList';
 // import Slick from '../components/home/Slick';
 
-const HomeDiv = styled.div`
+export const HomeDiv = styled.div`
   background-color: #f8f9fa;
   > main {
     width: 95%;

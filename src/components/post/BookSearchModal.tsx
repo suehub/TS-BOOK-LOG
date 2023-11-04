@@ -95,7 +95,7 @@ export const Div = styled.div`
 
       ul {
         width: 98%;
-        max-height: 60vh;
+        max-height: 55vh;
         margin: 1rem auto;
         border-radius: 4px;
         overflow-y: scroll;
@@ -223,11 +223,11 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
 
           {searchTerm !== '' &&
             searchPerformed &&
-            (books?.length === 0 ? (
+            (books.length === 0 ? (
               <p className="message">검색된 도서가 없습니다</p>
             ) : (
               <p className="message">
-                {books?.length}개의 도서가 검색되었습니다
+                {books.length}개의 도서가 검색되었습니다
               </p>
             ))}
 
