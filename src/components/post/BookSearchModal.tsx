@@ -133,7 +133,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
 
-  const baseURL = process.env.REACT_APP_NAVER_API_URL;
+  const apiBaseURL = process.env.REACT_APP_API_BASE_URL;
 
   const handleClickBackground = async (
     e: React.MouseEvent<HTMLDivElement>
@@ -149,9 +149,9 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
     e.preventDefault();
     try {
       const encodedSearchTerm = encodeURIComponent(searchTerm);
-      if (baseURL != null) {
+      if (apiBaseURL != null) {
         const response = await axios.get(
-          `${baseURL}?query=${encodedSearchTerm}&display=15`,
+          `${apiBaseURL}?query=${encodedSearchTerm}&display=15`,
           {
             headers: {
               'X-Naver-Client-Id': process.env.REACT_APP_NAVER_CLIENT_ID,
