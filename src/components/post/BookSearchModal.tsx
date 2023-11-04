@@ -151,7 +151,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
       const encodedSearchTerm = encodeURIComponent(searchTerm);
       if (baseURL != null) {
         const response = await axios.get(
-          `${baseURL}?query=${encodedSearchTerm}&display=15`,
+          `/proxy/${baseURL}?query=${encodedSearchTerm}&display=15`,
           {
             headers: {
               'X-Naver-Client-Id': process.env.REACT_APP_NAVER_CLIENT_ID,
