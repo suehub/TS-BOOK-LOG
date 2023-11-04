@@ -60,13 +60,6 @@ const PostList: React.FC = () => {
     return postData;
   };
 
-  // useEffect(() => {
-  //   void (async () => {
-  //     const fetchedPosts = await fetchPosts();
-  //     setPosts(fetchedPosts);
-  //   })();
-  // }, []);
-
   useEffect(() => {
     void (async () => {
       const fetchedPosts = await fetchPosts();
@@ -82,11 +75,7 @@ const PostList: React.FC = () => {
 
   return (
     <Div>
-      {posts.length > 0 ? (
-        <p className="post-length">{`총 ${posts.length}개의 북로그`}</p>
-      ) : (
-        <p className="post-length">검색된 북로그가 없습니다.</p>
-      )}
+      <p className="post-length">{`총 ${posts.length}개의 북로그`}</p>
 
       <PostWrapper>
         {posts.map((post, index) => {

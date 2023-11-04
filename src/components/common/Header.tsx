@@ -6,7 +6,6 @@ import { IoMdArrowDropdown } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../../assets/fonts/font.css';
-// import LogoIcon from '../../assets/images/logo.png';
 import { useAuth } from '../../context/Authcontext';
 
 const Div = styled.header`
@@ -27,15 +26,9 @@ const Logo = styled.div`
   align-items: center;
   cursor: pointer;
   margin-left: 0.2rem;
-  padding: 0.2rem;
-  > img {
-    width: 2.4rem;
-    height: 2.6rem;
-    // margin-right: 0.3rem;
-  }
+  padding: 0 0.2rem;
   > p {
-    // padding-top: 0.35rem;
-    margin-left: 0.3rem;
+    margin-left: 0.25rem;
     font-size: 1.6rem;
   }
 `;
@@ -59,14 +52,13 @@ const Search = styled.form`
     }
   }
   .search-button {
-    padding: 1rem;
+    padding: 0.6rem 1rem;
     white-space: nowrap;
     font-size: 1.1rem;
     border-top-right-radius: 20rem;
     border-bottom-right-radius: 20rem;
     border: none;
     border-left: 2px solid #000;
-    background-color: inherit;
     background-color: #f1f2f3;
     &:hover {
       background-color: rgb(0, 0, 0, 0.08);
@@ -202,7 +194,6 @@ const Header: React.FC = () => {
         }}
       >
         <BiBookReader size={35} />
-        {/* <img src={LogoIcon} alt="logo" /> */}
         <p>BOOKLOG</p>
       </Logo>
       <Search

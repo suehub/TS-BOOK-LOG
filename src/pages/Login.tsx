@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { BiBookReader } from 'react-icons/bi';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import LogoIcon from '../assets/images/logo.png';
 import { useAuth } from '../context/Authcontext';
 
 interface Props {
@@ -18,13 +18,9 @@ export const Logo = styled.div`
   cursor: pointer;
   margin-left: 0.2rem;
   padding: 1.2rem 0;
-  > img {
-    width: 2.8rem;
-    height: 2.9rem;
-    margin-right: 0.3rem;
-  }
   > p {
-    padding-top: 0.5rem;
+    margin-left: 0.3rem;
+    padding-bottom: 0.1rem;
     font-family: NotoSansKR-SemiBold;
     font-size: 2rem;
   }
@@ -166,7 +162,7 @@ const Login: React.FC = () => {
           navigate('/');
         }}
       >
-        <img src={LogoIcon} alt="logo" />
+        <BiBookReader size={40} />
         <p>BOOKLOG</p>
       </Logo>
       <form

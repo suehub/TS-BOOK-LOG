@@ -1,8 +1,8 @@
 import React from 'react';
 import { AiFillGithub } from 'react-icons/ai';
+import { BiBookReader } from 'react-icons/bi';
 import { SiVelog } from 'react-icons/si';
 import styled from 'styled-components';
-import LogoIcon from '../../assets/images/logo.png';
 
 const Div = styled.div`
   width: 100%;
@@ -18,13 +18,11 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.8rem;
-  > img {
-    width: 1.3rem;
-    height: 1.4rem;
-    margin-right: 0.3rem;
-    margin-bottom: 0.5rem;
+  .logo-icon {
+    margin-bottom: 0.2rem;
   }
   > p {
+    margin-left: 0.3rem;
     font-size: 0.8rem;
   }
   > span {
@@ -54,7 +52,7 @@ const Footer: React.FC = () => {
   return (
     <Div>
       <Logo>
-        <img src={LogoIcon} alt="logo" />
+        <BiBookReader className="logo-icon" size={20} />
         <p>BOOKLOG</p>
         <span>|</span>
       </Logo>

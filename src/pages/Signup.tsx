@@ -5,9 +5,9 @@ import {
   type Auth,
 } from 'firebase/auth';
 import React, { useCallback, useEffect, useState } from 'react';
+import { BiBookReader } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import LogoIcon from '../assets/images/logo.png';
 import { Button, Logo } from './Login';
 
 interface FormData {
@@ -227,7 +227,7 @@ const Signup: React.FC = () => {
           navigate('/');
         }}
       >
-        <img src={LogoIcon} alt="logo" />
+        <BiBookReader size={40} />
         <p>BOOKLOG</p>
       </Logo>
       <form
