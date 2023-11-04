@@ -223,7 +223,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
 
           {searchTerm !== '' &&
             searchPerformed &&
-            (books.length === 0 ? (
+            (books?.length === 0 ? (
               <p className="message">검색된 도서가 없습니다</p>
             ) : (
               <p className="message">
