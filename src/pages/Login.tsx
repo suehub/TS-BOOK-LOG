@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BiBookReader } from 'react-icons/bi';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
@@ -121,13 +121,99 @@ const LinkWrapper = styled.div`
   }
 `;
 
+const ModalBackground = styled.div<Props>`
+  position: fixed;
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+  > div {
+    width: 30vw;
+    height: 35vh;
+    min-height: 45%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 20px;
+    z-index: 99;
+    font-family: NotoSansKR-Medium;
+    > form {
+      width: 100%;
+      height: 100%;
+      padding: 1rem 2.7rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      > div:first-of-type {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+  .title {
+    width: 100%;
+    border-bottom: 1px solid #d2d2d2;
+    text-align: left;
+    > div {
+      padding: 1.5rem 2.7rem;
+      font-family: NotoSansKR-Bold;
+      font-size: 1.2rem;
+    }
+  }
+  .find-label {
+    margin: 1rem 0px;
+    font-family: NotoSansKR-Medium;
+    font-size: 1rem;
+    color: #000;
+    &::after {
+      content: '*';
+      color: rgb(240, 61, 12);
+      margin-left: 0.4rem;
+    }
+  }
+  .find-input {
+    width: 100%;
+    height: 100%;
+    font-family: NotoSansKR-Medium;
+    font-size: 1rem;
+    padding: 1rem;
+    padding-left: 0.8rem;
+    outline: none;
+    border-radius: 8px;
+    border: 1.8px solid #d2d2d2;
+  }
+  .find-button__wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+  }
+`;
+
+const FindButton = styled(Button)`
+  width: 80vw;
+  &:first-of-type {
+    margin-right: 2rem;
+  }
+  font-size: 1.2rem;
+`;
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [findEmail, setFindEmail] = useState<string>('');
+
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const modalBackgroundRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
-  const { login, googleLogin } = useAuth();
+  const { login, googleLogin, resetPassword } = useAuth();
 
   // 로그인
   const handleLogin = async (): Promise<void> => {
@@ -155,68 +241,156 @@ const Login: React.FC = () => {
     }
   };
 
+  // 비밀번호 재설정
+  const handleFindPassword = async (): Promise<void> => {
+    try {
+      if (findEmail.trim() !== '') {
+        await resetPassword(findEmail);
+        alert('메일 전송에 성공했습니다.');
+        setFindEmail('');
+        setIsModal(false);
+      }
+    } catch (error) {
+      alert('메일 전송에 실패했습니다.');
+      console.error('메일 전송 실패:', error);
+      setFindEmail('');
+    }
+  };
+
+  const handleClickBackground = async (
+    e: React.MouseEvent<HTMLDivElement>
+  ): Promise<void> => {
+    if (e.target === modalBackgroundRef.current) {
+      setIsModal(false);
+      setFindEmail('');
+    }
+  };
+
   return (
-    <Div>
-      <Logo
-        onClick={() => {
-          navigate('/');
-        }}
-      >
-        <BiBookReader size={40} />
-        <p>BOOKLOG</p>
-      </Logo>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void handleLogin();
-        }}
-      >
-        <div>
-          <input
-            type="email"
-            placeholder="이메일을 입력하세요"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            required
-          />
-          <input
-            type="password"
-            placeholder="비밀번호를 입력하세요"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            required
-          />
-        </div>
-        <Button color="#087EA4" $background="#E6F7FF" type="submit">
-          로그인
-        </Button>
-        <span>
-          <hr />
-          &nbsp;&nbsp;&nbsp;또는 &nbsp;&nbsp;
-          <hr />
-        </span>
-        <Button
+    <>
+      <Div>
+        <Logo
           onClick={() => {
-            void handleGoogleLogin();
+            navigate('/');
           }}
-          color="#000"
-          $background="#fff"
-          type="button"
         >
-          <FcGoogle className="google" size={25} />
-          Google 로그인
-        </Button>
-        <LinkWrapper>
-          <button type="button">비밀번호 찾기</button>
-          <span>|</span>
-          <Link to="/signup">회원가입</Link>
-        </LinkWrapper>
-      </form>
-    </Div>
+          <BiBookReader size={40} />
+          <p>BOOKLOG</p>
+        </Logo>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleLogin();
+          }}
+        >
+          <div>
+            <input
+              type="email"
+              placeholder="이메일을 입력하세요"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              required
+            />
+            <input
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              required
+            />
+          </div>
+          <Button color="#087EA4" $background="#E6F7FF" type="submit">
+            로그인
+          </Button>
+          <span>
+            <hr />
+            &nbsp;&nbsp;&nbsp;또는 &nbsp;&nbsp;
+            <hr />
+          </span>
+          <Button
+            onClick={() => {
+              void handleGoogleLogin();
+            }}
+            color="#000"
+            $background="#fff"
+            type="button"
+          >
+            <FcGoogle className="google" size={25} />
+            Google 로그인
+          </Button>
+          <LinkWrapper>
+            <button
+              onClick={() => {
+                setEmail('');
+                setIsModal(true);
+              }}
+              type="button"
+            >
+              비밀번호 찾기
+            </button>
+            <span>|</span>
+            <Link to="/signup">회원가입</Link>
+          </LinkWrapper>
+        </form>
+      </Div>
+
+      {isModal && (
+        <ModalBackground
+          onClick={(e) => {
+            void handleClickBackground(e);
+          }}
+          ref={modalBackgroundRef}
+        >
+          <div>
+            <div className="title">
+              <div>비밀번호 찾기</div>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void handleFindPassword();
+              }}
+            >
+              <div>
+                <label className="find-label" htmlFor="email">
+                  이메일
+                </label>
+                <input
+                  className="find-input"
+                  id="email"
+                  type="email"
+                  placeholder="example@example.com"
+                  value={findEmail}
+                  onChange={(e) => {
+                    setFindEmail(e.target.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="find-button__wrapper">
+                <FindButton
+                  color="#808080"
+                  $background="#fff"
+                  type="button"
+                  onClick={() => {
+                    setIsModal(false);
+                  }}
+                >
+                  Cancel
+                </FindButton>
+                <FindButton color="#087EA4" $background="#E6F7FF" type="submit">
+                  Send
+                </FindButton>
+              </div>
+            </form>
+          </div>
+        </ModalBackground>
+      )}
+    </>
   );
 };
 

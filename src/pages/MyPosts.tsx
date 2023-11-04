@@ -1,57 +1,37 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import Footer from '../components/common/Footer';
 import Header from '../components/common/Header';
 import PostItem from '../components/home/PostItem';
 import { Div, PostWrapper, type Post } from '../components/home/PostList';
 import { useAuth } from '../context/Authcontext';
 import { db } from '../firebase';
+import { Wrapper } from './Bookmarks';
 
-export const Wrapper = styled.div`
-  > main {
-    width: 95%;
-    min-height: 82vh;
-    margin: 0 auto;
-  }
-`;
-
-const Bookmarks: React.FC = () => {
+const MyPosts: React.FC = () => {
   const navigate = useNavigate();
 
   const { currentUser } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    const fetchBookmarkedPosts = async (): Promise<void> => {
+    const fetchMyPosts = async (): Promise<void> => {
       if (currentUser?.uid != null) {
-        const bookmarksRef = collection(db, 'bookmarks');
-        const q = query(bookmarksRef, where('userId', '==', currentUser.uid));
-        const bookmarkedSnapshots = await getDocs(q);
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef, where('authorId', '==', currentUser.uid));
+        const myPostSnapshots = await getDocs(q);
 
-        const postPromises = bookmarkedSnapshots.docs.map(
-          async (docSnapshot) => {
-            const postId = docSnapshot.data().postId;
-            const postRef = doc(db, 'posts', postId);
-            const postSnap = await getDoc(postRef);
-            return { id: postSnap.id, ...(postSnap.data() as Post) };
-          }
-        );
+        const myPosts = myPostSnapshots.docs.map((docSnapshot) => ({
+          id: docSnapshot.id,
+          ...(docSnapshot.data() as Post),
+        }));
 
-        const bookmarkedPosts = await Promise.all(postPromises);
-        setPosts(bookmarkedPosts);
+        setPosts(myPosts);
       }
     };
 
-    void fetchBookmarkedPosts();
+    void fetchMyPosts();
   }, [currentUser]);
 
   return (
@@ -60,10 +40,11 @@ const Bookmarks: React.FC = () => {
       <main>
         <Div>
           {posts.length === 0 ? (
-            <p className="post-length">북마크된 북로그가 존재하지 않습니다</p>
+            <p className="post-length">작성한 북로그가 존재하지 않습니다</p>
           ) : (
-            <p className="post-length">총 {posts.length}개의 북마크</p>
+            <p className="post-length">총 {posts.length}개의 내 북로그</p>
           )}
+
           <PostWrapper>
             {posts.map((post, index) => {
               return (
@@ -86,4 +67,4 @@ const Bookmarks: React.FC = () => {
   );
 };
 
-export default Bookmarks;
+export default MyPosts;

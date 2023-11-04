@@ -10,7 +10,7 @@ interface BookSearchModalProps {
   onSelectBook: (book: Book) => Promise<void>;
 }
 
-const Div = styled.div`
+export const Div = styled.div`
   position: fixed;
   display: flex;
   align-items: center;
@@ -149,6 +149,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
   ): Promise<void> => {
     if (e.target === modalBackgroundRef.current) {
       onClose();
+      setSearchPerformed(false);
     }
   };
 
@@ -156,6 +157,10 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+
+    if (searchTerm.trim() === '') {
+      return;
+    }
     setSearchPerformed(true);
 
     try {
@@ -216,11 +221,15 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
             </div>
           </div>
 
-          {searchPerformed && books.length === 0 ? (
-            <p className="message">검색된 도서가 없습니다.</p>
-          ) : (
-            <p className="message">{books.length}개의 도서가 검색되었습니다.</p>
-          )}
+          {searchTerm !== '' &&
+            searchPerformed &&
+            (books.length === 0 ? (
+              <p className="message">검색된 도서가 없습니다</p>
+            ) : (
+              <p className="message">
+                {books.length}개의 도서가 검색되었습니다
+              </p>
+            ))}
 
           <ul>
             {books?.map((book, index) => (

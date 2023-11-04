@@ -43,6 +43,11 @@ const Div = styled.div`
         > label {
           font-size: 1.25rem;
           font-family: NotoSansKR-Medium;
+          &::after {
+            content: '*';
+            color: rgb(240, 61, 12);
+            margin-left: 0.4rem;
+          }
         }
         > input {
           width: 100%;

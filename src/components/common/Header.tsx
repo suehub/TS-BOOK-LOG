@@ -237,12 +237,21 @@ const Header: React.FC = () => {
                   <NavItem className="logout">
                     <div
                       onClick={() => {
+                        navigate('/myBookLog');
+                      }}
+                    >
+                      <BiBookReader size={20} />
+                      <span>북로그</span>
+                    </div>
+                    <div
+                      onClick={() => {
                         navigate('/bookmarks');
                       }}
                     >
                       <BiBookmark size={20} />
                       <span>북마크</span>
                     </div>
+
                     <div onClick={handleLogout}>
                       <BiLogOut size={20} />
                       <span>로그아웃</span>
