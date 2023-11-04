@@ -227,7 +227,7 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
               <p className="message">검색된 도서가 없습니다</p>
             ) : (
               <p className="message">
-                {books.length}개의 도서가 검색되었습니다
+                {books?.length}개의 도서가 검색되었습니다
               </p>
             ))}
 
