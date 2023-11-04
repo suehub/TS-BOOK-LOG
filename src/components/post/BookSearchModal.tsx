@@ -86,12 +86,20 @@ const Div = styled.div`
           }
         }
       }
+      .message {
+        width: 98%;
+        margin: 0 auto;
+        padding: 1.2rem 0.2rem 0 0.2rem;
+        font-size: 1.2rem;
+      }
+
       ul {
         width: 98%;
-        height: 70%;
+        max-height: 60vh;
         margin: 1rem auto;
-        overflow-y: scroll;
         border-radius: 4px;
+        overflow-y: scroll;
+
         > li {
           width: 100%;
           margin: 0.5rem 0;
@@ -130,10 +138,10 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [books, setBooks] = useState<Book[]>([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
 
-  // const apiBaseURL = process.env.REACT_APP_API_BASE_URL;
   const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy';
 
   const handleClickBackground = async (
@@ -148,11 +156,13 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+    setSearchPerformed(true);
+
     try {
       const encodedSearchTerm = encodeURIComponent(searchTerm);
       if (PROXY != null) {
         const response = await axios.get(
-          `${PROXY}/v1/search/book.json?query=${encodedSearchTerm}&display=15`,
+          `${PROXY}/v1/search/book.json?query=${encodedSearchTerm}&display=20`,
           {
             headers: {
               'X-Naver-Client-Id': process.env.REACT_APP_NAVER_CLIENT_ID,
@@ -205,6 +215,12 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
               <button type="submit">검색</button>
             </div>
           </div>
+
+          {searchPerformed && books.length === 0 ? (
+            <p className="message">검색된 도서가 없습니다.</p>
+          ) : (
+            <p className="message">{books.length}개의 도서가 검색되었습니다.</p>
+          )}
 
           <ul>
             {books?.map((book, index) => (
