@@ -13,6 +13,8 @@ import React, {
   useState,
 } from 'react';
 import { auth } from '../firebase';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 type FirebaseUser = User;
 
@@ -40,6 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const navigate = useNavigate();
 
   // 사용자 인증 상태를 추적하고 currentUser 값을 설정
   useEffect(() => {
@@ -86,8 +89,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const provider = new GoogleAuthProvider();
           await signInWithPopup(auth, provider);
+          void Swal.fire('로그인', 'Google 구글 로그인 되었습니다.', 'success');
+          navigate('/');
         } catch (error) {
           console.error('Google 로그인 실패:', error);
+          void Swal.fire('로그인', 'Google 로그인에 실패하였습니다.', 'error');
         }
       },
     };

@@ -240,10 +240,7 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async (): Promise<void> => {
     try {
       await googleLogin();
-      void Swal.fire('로그인', '로그인 되었습니다.', 'success');
-      navigate('/');
     } catch (error) {
-      void Swal.fire('로그인', '로그인에 실패하였습니다.', 'error');
       console.error('로그인 실패:', error);
     }
   };
