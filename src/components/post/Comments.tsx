@@ -79,8 +79,8 @@ const Comment = styled.div`
       display: flex;
       align-items: center;
       img {
-        width: 3rem;
-        height: 3rem;
+        width: 2.8rem;
+        height: 2.8rem;
         display: block;
         border-radius: 50%;
         object-fit: cover;
