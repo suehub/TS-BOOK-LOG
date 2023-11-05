@@ -204,6 +204,10 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
       alert('로그인이 필요합니다.');
       return;
     }
+    if (commentText === '') {
+      alert('댓글을 입력해주세요.');
+      return;
+    }
     const commentCollection = collection(db, 'comments');
     try {
       await addDoc(commentCollection, {

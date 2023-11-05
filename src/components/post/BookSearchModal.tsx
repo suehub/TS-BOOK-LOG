@@ -158,9 +158,6 @@ const BookSearchModal: React.FC<BookSearchModalProps> = ({
   ): Promise<void> => {
     e.preventDefault();
 
-    // if (searchTerm.trim() === '') {
-    //   return;
-    // }
     setSearchPerformed(true);
 
     try {

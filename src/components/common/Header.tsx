@@ -205,6 +205,7 @@ const Header: React.FC = () => {
         <input
           type="text"
           value={searchTerm}
+          placeholder="책 제목 또는 북로그 제목을 검색해주세요"
           onChange={(e) => {
             setSearchTerm(e.target.value);
           }}

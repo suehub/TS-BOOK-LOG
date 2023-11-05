@@ -91,7 +91,7 @@ export const PostButton = styled.div`
   > div {
     display: flex;
     button:first-of-type {
-      margin-right: 0.5rem;
+      margin-right: 1rem;
     }
   }
   button {

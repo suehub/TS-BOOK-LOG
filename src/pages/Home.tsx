@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Footer from '../components/common/Footer';
 import Header from '../components/common/Header';
 import PostList from '../components/home/PostList';
-// import Slick from '../components/home/Slick';
 
 export const HomeDiv = styled.div`
   background-color: #f8f9fa;
@@ -19,7 +18,6 @@ const Home: React.FC = () => {
     <HomeDiv>
       <Header />
       <main>
-        {/* <Slick /> */}
         <PostList />
       </main>
 
