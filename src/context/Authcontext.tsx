@@ -13,8 +13,8 @@ import React, {
   useState,
 } from 'react';
 import { auth } from '../firebase';
+import { type FirebaseError } from 'firebase/app';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
 
 type FirebaseUser = User;
 
@@ -42,7 +42,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const navigate = useNavigate();
 
   // 사용자 인증 상태를 추적하고 currentUser 값을 설정
   useEffect(() => {
@@ -89,11 +88,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const provider = new GoogleAuthProvider();
           await signInWithPopup(auth, provider);
-          void Swal.fire('로그인', 'Google 구글 로그인 되었습니다.', 'success');
-          navigate('/');
+          void Swal.fire('로그인', 'Google 로그인 되었습니다.', 'success');
         } catch (error) {
-          console.error('Google 로그인 실패:', error);
-          void Swal.fire('로그인', 'Google 로그인에 실패하였습니다.', 'error');
+          const firebaseError = error as FirebaseError;
+          if (firebaseError.code === 'auth/popup-closed-by-user') {
+            void Swal.fire(
+              '로그인',
+              'Google 창이 닫혀 로그인에 실패하였습니다.',
+              'error'
+            );
+          } else {
+            void Swal.fire(
+              '로그인',
+              'Google 로그인에 실패하였습니다.',
+              'error'
+            );
+          }
+          throw error; // 필요에 따라 오류를 다시 던질 수 있습니다.
         }
       },
     };

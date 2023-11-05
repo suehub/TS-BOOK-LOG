@@ -240,8 +240,9 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async (): Promise<void> => {
     try {
       await googleLogin();
+      navigate('/');
     } catch (error) {
-      console.error('로그인 실패:', error);
+      console.error('Google 로그인 실패:', error);
     }
   };
 
