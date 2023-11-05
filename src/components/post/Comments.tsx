@@ -130,17 +130,18 @@ const Comment = styled.div`
   }
   textarea {
     width: 100%;
-    resize: none;
+    min-height: 6.125rem;
     padding: 1rem;
+    margin-bottom: 1.5rem;
+    resize: none;
     outline: none;
     border: 1px solid #f1f3f5;
-    margin-bottom: 1.5rem;
     border-radius: 4px;
-    min-height: 6.125rem;
-    font-size: 1.1rem;
     color: #212529;
     line-height: 1.75;
     background: #fff;
+    font-family: NotoSansKR-Regular;
+    font-size: 1.1rem;
   }
 `;
 
@@ -319,8 +320,6 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
     }
   };
 
-  // ...
-
   return (
     <Div>
       <p>{comments.length}개의 댓글</p>
@@ -410,7 +409,7 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
             />
           ) : (
             <div className="comment">{comment.text}</div>
-          )}{' '}
+          )}
         </Comment>
       ))}
     </Div>
