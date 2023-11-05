@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../../assets/fonts/font.css';
 import { useAuth } from '../../context/Authcontext';
+import Swal from 'sweetalert2';
 
 const Div = styled.header`
   width: 95%;
@@ -170,13 +171,27 @@ const Header: React.FC = () => {
   // 로그아웃
   const handleAsyncLogout = async (): Promise<void> => {
     try {
-      if (confirm('로그아웃하시겠습니까?')) {
-        await logout();
-        alert('로그아웃되었습니다.');
-        navigate('/');
-      }
+      void Swal.fire({
+        title: '로그아웃',
+        text: '로그아웃하시겠습니까?',
+        icon: 'question',
+
+        showCancelButton: true, // cancel버튼 보이기
+        confirmButtonColor: '#087EA4', // confrim 버튼 색
+        cancelButtonColor: '#a5a5a5', // cancel 버튼 색
+        confirmButtonText: '확인', // confirm 버튼 텍스트
+        cancelButtonText: '취소', // cancel 버튼 텍스트
+
+        reverseButtons: true, // 버튼 순서 거꾸로
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await logout();
+          void Swal.fire('로그아웃', '로그아웃되었습니다.', 'success');
+          navigate('/');
+        }
+      });
     } catch (error) {
-      alert('로그아웃에 실패하였습니다. 다시 시도해주세요');
+      void Swal.fire('로그아웃', '로그아웃에 실패하였습니다.', 'error');
       console.error('로그아웃 실패:', error);
     }
   };

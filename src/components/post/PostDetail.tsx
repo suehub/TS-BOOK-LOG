@@ -19,6 +19,7 @@ import Header from '../common/Header';
 import { type Post } from '../home/PostList';
 import Comments from './Comments';
 import SideBar from './SideBar';
+import Swal from 'sweetalert2';
 
 const Wrapper = styled.div`
   background-color: #fff;
@@ -250,19 +251,32 @@ const PostDetail: React.FC = () => {
 
   // post 삭제
   const deletePost = async (): Promise<void> => {
-    const userConfirmed = window.confirm('이 북로그를 삭제하시겠습니까?');
+    void Swal.fire({
+      title: '삭제',
+      text: '이 북로그를 삭제하시겠습니까?',
+      icon: 'question',
 
-    if (!userConfirmed) return;
-    if (id == null) return;
+      showCancelButton: true, // cancel버튼 보이기
+      confirmButtonColor: 'rgb(240, 61, 12)', // confrim 버튼 색
+      cancelButtonColor: '#a5a5a5', // cancel 버튼 색
+      confirmButtonText: '삭제', // confirm 버튼 텍스트
+      cancelButtonText: '취소', // cancel 버튼 텍스트
 
-    try {
-      await deletePostAndRelatedData(id);
-      alert('북로그가 삭제되었습니다.');
-      navigate('/');
-    } catch (error) {
-      alert('북로그 삭제에 실패하였습니다.');
-      console.error('Error deleting post and related data:', error);
-    }
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (id == null) return;
+
+        try {
+          await deletePostAndRelatedData(id);
+          void Swal.fire('삭제', '북로그가 삭제되었습니다.', 'success');
+          navigate('/');
+        } catch (error) {
+          void Swal.fire('삭제', '북로그 삭제에 실패하였습니다.', 'error');
+          console.error('Error deleting post and related data:', error);
+        }
+      }
+    });
   };
 
   const formatBookDate = (

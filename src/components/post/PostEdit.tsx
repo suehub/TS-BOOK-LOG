@@ -11,6 +11,7 @@ import { type Post } from '../home/PostList';
 import BookSearchModal from './BookSearchModal';
 import { BookDesc } from './PostDetail';
 import { Div, PostButton, type Book } from './PostWrite';
+import Swal from 'sweetalert2';
 
 export const StyledBook = styled(BookDesc)`
   width: 50%;
@@ -112,11 +113,12 @@ const PostEdit: React.FC = () => {
 
     try {
       await updateDoc(postRef, updatedData);
-      alert('북로그가 수정되었습니다.');
+      void Swal.fire('수정', '북로그가 수정되었습니다.', 'success');
       navigate(`/post/${id}`);
     } catch (error) {
+      void Swal.fire('수정', '북로그가 수정에 실패하였습니다.', 'error');
+
       console.error('Error updating post:', error);
-      alert('북로그 수정에 실패하였습니다.');
     }
   };
 

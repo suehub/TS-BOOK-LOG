@@ -4,6 +4,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/Authcontext';
+import Swal from 'sweetalert2';
 
 interface Props {
   color?: string;
@@ -220,11 +221,16 @@ const Login: React.FC = () => {
     try {
       if (email !== undefined && password !== undefined) {
         await login(email, password);
-        alert(`로그인되었습니다.`);
+        void Swal.fire('로그인', '로그인 되었습니다.', 'success');
         navigate('/');
       }
     } catch (error) {
-      alert('이메일 또는 패스워드가 잘못 입력되었습니다.');
+      void Swal.fire(
+        '로그인',
+        '이메일 또는 패스워드가 잘못 입력되었습니다.',
+        'error'
+      );
+
       setPassword('');
       console.error('로그인 실패:', error);
     }
@@ -234,9 +240,10 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async (): Promise<void> => {
     try {
       await googleLogin();
+      void Swal.fire('로그인', '로그인 되었습니다.', 'success');
       navigate('/');
     } catch (error) {
-      alert('로그인에 실패하였습니다.');
+      void Swal.fire('로그인', '로그인에 실패하였습니다.', 'error');
       console.error('로그인 실패:', error);
     }
   };
@@ -246,12 +253,17 @@ const Login: React.FC = () => {
     try {
       if (findEmail.trim() !== '') {
         await resetPassword(findEmail);
-        alert('메일 전송에 성공했습니다.');
+        void Swal.fire(
+          '비밀번호 재설정',
+          '메일 전송에 성공했습니다.',
+          'success'
+        );
+
         setFindEmail('');
         setIsModal(false);
       }
     } catch (error) {
-      alert('메일 전송에 실패했습니다.');
+      void Swal.fire('비밀번호 재설정', '메일 전송에 실패했습니다.', 'error');
       console.error('메일 전송 실패:', error);
       setFindEmail('');
     }

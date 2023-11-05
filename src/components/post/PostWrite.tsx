@@ -11,6 +11,7 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import BookSearchModal from './BookSearchModal';
 import { StyledBook } from './PostEdit';
+import Swal from 'sweetalert2';
 
 export const Div = styled.div`
   margin: 0 auto;
@@ -208,14 +209,18 @@ const PostWrite: React.FC = () => {
         // 포스트 데이터베이스에 추가
         await addDoc(postsCollection, postData);
 
-        alert('북로그가 업로드되었습니다.');
+        void Swal.fire('북로그', '북로그가 업로드되었습니다.', 'success');
         navigate('/');
       } else {
-        alert('책을 선택하고 제목과 글을 입력해주세요');
+        void Swal.fire(
+          '북로그 작성',
+          '책을 선택하고 제목과 글을 입력해주세요.',
+          'error'
+        );
       }
     } catch (error) {
+      void Swal.fire('북로그', '북로그가 업로드에 실패하였습니다.', 'error');
       console.error('Error saving post: ', error);
-      alert('북로그 업로드에 실패하였습니다.');
     }
   };
 

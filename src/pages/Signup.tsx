@@ -9,6 +9,7 @@ import { BiBookReader } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Logo } from './Login';
+import Swal from 'sweetalert2';
 
 interface FormData {
   email: string;
@@ -206,7 +207,11 @@ const Signup: React.FC = () => {
             displayName: formData.name !== '' ? formData.name : null,
           });
 
-          alert(`${user.displayName} 님, 환영합니다`);
+          void Swal.fire(
+            '회원가입 성공',
+            `${user.displayName} 님, 환영합니다`,
+            'success'
+          );
           navigate('/');
         }
       } catch (error) {
@@ -216,12 +221,12 @@ const Signup: React.FC = () => {
           const errorCode = error.code;
 
           if (errorCode === EMAIL_DUPLICATE_ERROR_CODE) {
-            alert('중복된 이메일이 존재합니다.');
+            void Swal.fire('회원가입', '중복된 이메일이 존재합니다.', 'error');
           }
         }
       }
     } else {
-      alert('모든 항목을 올바르게 입력해주세요');
+      void Swal.fire('회원가입', '모든 항목을 올바르게 입력해주세요', 'error');
     }
   };
 

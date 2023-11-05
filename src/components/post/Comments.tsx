@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import defaultProfile from '../../assets/images/default_profile.png';
 import { useAuth } from '../../context/Authcontext';
 import { db } from '../../firebase';
+import Swal from 'sweetalert2';
 
 const Div = styled.div`
   width: 100%;
@@ -201,11 +202,10 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
     commentText: string
   ): Promise<void> => {
     if (currentUser == null) {
-      alert('로그인이 필요합니다.');
       return;
     }
     if (commentText === '') {
-      alert('댓글을 입력해주세요.');
+      void Swal.fire('댓글', '댓글을 입력해주세요.', 'error');
       return;
     }
     const commentCollection = collection(db, 'comments');
@@ -218,11 +218,16 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
         text: commentText,
         createdAt: new Date(),
       });
-      alert('댓글이 성공적으로 추가되었습니다.');
+      void Swal.fire('댓글', '댓글이 작성되었습니다.', 'success');
+      const updatedComments = await fetchComments(id);
+      setComments(updatedComments);
+      setCommentText('');
+
       navigate(`/post/${id}`);
     } catch (error) {
+      void Swal.fire('댓글', '댓글 작성에 실패하였습니다.', 'error');
+
       console.error('Error adding comment:', error);
-      alert('댓글 추가에 실패하였습니다.');
     }
   };
 
@@ -234,26 +239,39 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
       setComments(updatedComments);
       setCommentText('');
     } else {
-      alert('로그인이 필요합니다.');
+      void Swal.fire('댓글', '로그인이 필요합니다.', 'error');
     }
   };
 
   // 댓글 삭제
   const handleDeleteComment = async (commentId: string): Promise<void> => {
-    const userConfirmed = window.confirm('댓글을 삭제하시겠습니까?');
-    if (userConfirmed) {
-      const commentRef = doc(db, 'comments', commentId);
-      try {
-        await deleteDoc(commentRef);
-        alert('댓글이 삭제되었습니다.');
-        const updatedComments = await fetchComments(id);
-        setComments(updatedComments);
-        navigate(`/post/${id}`);
-      } catch (error) {
-        console.error('Error deleting comment:', error);
-        alert('댓글 삭제에 실패하였습니다.');
+    void Swal.fire({
+      title: '삭제',
+      text: '댓글을 삭제하시겠습니까?',
+      icon: 'question',
+
+      showCancelButton: true, // cancel버튼 보이기
+      confirmButtonColor: 'rgb(240, 61, 12)', // confrim 버튼 색
+      cancelButtonColor: '#a5a5a5', // cancel 버튼 색
+      confirmButtonText: '삭제', // confirm 버튼 텍스트
+      cancelButtonText: '취소', // cancel 버튼 텍스트
+
+      reverseButtons: true, // 버튼 순서 거꾸로
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const commentRef = doc(db, 'comments', commentId);
+        try {
+          await deleteDoc(commentRef);
+          void Swal.fire('삭제', '닷글이 삭제되었습니다.', 'success');
+          const updatedComments = await fetchComments(id);
+          setComments(updatedComments);
+          navigate(`/post/${id}`);
+        } catch (error) {
+          void Swal.fire('삭제', '댓글 삭제에 실패하였습니다.', 'error');
+          console.error('Error deleting comment:', error);
+        }
       }
-    }
+    });
   };
 
   // 댓글 수정
@@ -266,13 +284,15 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
       await updateDoc(commentRef, {
         text: newText,
       });
-      alert('댓글이 수정되었습니다.');
+
+      void Swal.fire('수정', '댓글이 수정되었습니다.', 'success');
       setEditCommentId(null); // 수정 상태 초기화
       const updatedComments = await fetchComments(id);
       setComments(updatedComments);
     } catch (error) {
+      void Swal.fire('수정', '댓글 수정에 실패하였습니다.', 'error');
+
       console.error('Error updating comment:', error);
-      alert('댓글 수정에 실패하였습니다.');
     }
   };
 
