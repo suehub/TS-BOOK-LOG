@@ -19,6 +19,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../../firebase';
+import { useAuth } from '../../context/Authcontext';
+import Swal from 'sweetalert2';
 
 const Div = styled.div`
   width: 4.3rem;
@@ -60,6 +62,7 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const { currentUser } = useAuth();
 
   // 데이터 패칭을 위한 함수 정의
   const fetchData = useCallback(
@@ -127,6 +130,10 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
 
   // 좋아요와 북마크 토글
   const handleLike = async (): Promise<void> => {
+    if (currentUser == null) {
+      void Swal.fire('좋아요', '로그인이 필요합니다.', 'error');
+      return;
+    }
     void handleInteraction(
       isLiked,
       collection(db, 'likes'),
@@ -138,6 +145,10 @@ const SideBar: React.FC<SideBarProps> = ({ postId, userId }) => {
   };
 
   const handleBookmark = async (): Promise<void> => {
+    if (currentUser == null) {
+      void Swal.fire('북마크', '로그인이 필요합니다.', 'error');
+      return;
+    }
     void handleInteraction(
       isBookmarked,
       collection(db, 'bookmarks'),
