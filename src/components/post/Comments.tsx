@@ -9,6 +9,7 @@ import {
   type DocumentData,
   type Timestamp,
   updateDoc,
+  orderBy,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -173,7 +174,8 @@ const Comments: React.FC<CommentsProps> = ({ id }) => {
   const fetchComments = async (id: string): Promise<DocumentData[]> => {
     const commentsQuery = query(
       collection(db, 'comments'),
-      where('postId', '==', id)
+      where('postId', '==', id),
+      orderBy('createdAt', 'asc')
     );
     try {
       const querySnapshot = await getDocs(commentsQuery);
